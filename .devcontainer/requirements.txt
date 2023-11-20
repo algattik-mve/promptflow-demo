@@ -1,3 +1,4 @@
 azure-cli
 promptflow[azure]
 promptflow-tools
+keyrings.alt
