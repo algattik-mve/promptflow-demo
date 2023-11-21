@@ -2,7 +2,7 @@
 
 This is a simple flow that allow you to ask questions about the content of patents (or any other data) indexed in Azure AI search and get answers.
 You can run the flow with a question as argument.
-It will look up the index to retrieve relevant content and post the question with the relevant content to OpenAI chat model (`gpt-4-32k`) to get an answer.
+It will look up the index to retrieve relevant content and post the question with the relevant content to OpenAI chat model (`gpt-35-turbo`) to get an answer.
 
 ## Prerequisites
 
@@ -16,14 +16,14 @@ pip install -r requirements.txt
 
 #### Azure OpenAI Service
 
-Deploy an Azure Open AI workspace. As of November 2023, GPT-4 models are only available in the regions: Sweden Central, Canada East, Switzerland North.
+Deploy an Azure Open AI workspace.
 
 In Azure Open AI Studio, create the following deployments:
 
 | Model                    | Deployment name          |
 | ------------------------ | ------------------------ |
 | `text-embedding-ada-002` | `text-embedding-ada-002` |
-| `gpt-4-32k`              | `gpt-4-32k`              |
+| `gpt-35-turbo`           | `gpt-35-turbo`           |
 
 #### Azure AI Search data
 
@@ -86,6 +86,6 @@ fi
 pf flow test --flow .
 
 # test with flow inputs
-pf flow test --flow . --inputs question="Can the high voltage of the vehicle ignition system affect other systems?"
+pf flow test --flow . --inputs question="How does the car know how much fuel is in the tank?"
 ```
 
