@@ -20,6 +20,21 @@ nodes:
     deployment_name: text-embedding-ada-002
     input: ${inputs.question}
   use_variants: false
+- name: search_question_from_vector_db
+  type: python
+  source:
+    type: package
+    tool: promptflow_vectordb.tool.vector_db_lookup.VectorDBLookup.search
+  inputs:
+    connection: ai_search_connection
+    index_name: patents
+    search_filters: ""
+    search_params: ""
+    text_field: ""
+    vector_field: contentVector
+    top_k: 2
+    vector: ${embed_the_question.output}
+  use_variants: false
 - name: generate_prompt_context
   type: python
   source:
@@ -49,21 +64,6 @@ nodes:
   connection: open_ai_connection
   api: chat
   module: promptflow.tools.aoai
-  use_variants: false
-- name: search_question_from_vector_db
-  type: python
-  source:
-    type: package
-    tool: promptflow_vectordb.tool.vector_db_lookup.VectorDBLookup.search
-  inputs:
-    connection: ai_search_connection
-    index_name: patents
-    search_filters: ""
-    search_params: ""
-    text_field: ""
-    vector_field: contentVector
-    top_k: 2
-    vector: ${embed_the_question.output}
   use_variants: false
 node_variants:
   Prompt_variants:
