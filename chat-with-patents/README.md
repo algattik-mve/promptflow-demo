@@ -2,7 +2,7 @@
 
 This is a simple flow that allow you to ask questions about the content of patents (or any other data) indexed in Azure AI search and get answers.
 You can run the flow with a question as argument.
-It will look up the index to retrieve relevant content and post the question with the relevant content to OpenAI chat model (g`pt-4-32k`) to get an answer.
+It will look up the index to retrieve relevant content and post the question with the relevant content to OpenAI chat model (`gpt-4-32k`) to get an answer.
 
 ## Prerequisites
 
