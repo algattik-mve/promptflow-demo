@@ -1,0 +1,5 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/CognitiveSearchConnection.schema.json
+name: azure_ai_search
+type: cognitive_search
+api_key: "<user-input>"
+api_base: "<api-endpoint>"

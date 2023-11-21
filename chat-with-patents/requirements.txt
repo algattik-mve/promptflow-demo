@@ -1,0 +1,6 @@
+openai
+jinja2
+python-dotenv
+promptflow[azure]
+promptflow-tools
+promptflow-vectordb
