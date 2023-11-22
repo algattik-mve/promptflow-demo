@@ -42,8 +42,6 @@ jobs:
       with:
         python-version: '3.11.4'
         cache: 'pip'
-    - name: List current directory
-      run: ls
     - name: Install promptflow
       run: pip install -r requirements.txt
     - name: Install local keyring
