@@ -29,7 +29,7 @@ jobs:
       run: pip install keyrings.alt
     - name: Configure promptflow connections
       run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=https://${{ vars.OPENAPI_ENDPOINT }}
-        pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=https://${{ vars.AISEARCH_ENDPOINT }}
+        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAPI_ENDPOINT }}
+        pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
