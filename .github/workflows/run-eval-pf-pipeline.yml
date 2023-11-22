@@ -23,9 +23,18 @@ jobs:
       run:
         working-directory: chat-with-patents
     steps:
-    - name: "check is MY_SECRET exists"
-      if: ${{ env.OPENAPI_KEY == '' }}
-      run: echo 'the secret \"OPENAPI_KEY\" has not been made; to create it'; false
+    - name: "check setting OPENAI_KEY"
+      if: ${{ env.OPENAI_KEY == '' }}
+      run: echo 'the secret "OPENAI_KEY" has not been set'; false
+    - name: "check setting OPENAI_ENDPOINT"
+      if: ${{ env.OPENAI_ENDPOINT == '' }}
+      run: echo 'the variable "OPENAI_ENDPOINT" has not been set'; false
+    - name: "check setting AISEARCH_KEY"
+      if: ${{ env.AISEARCH_KEY == '' }}
+      run: echo 'the secret "AISEARCH_KEY" has not been set'; false
+    - name: "check setting AISEARCH_ENDPOINT"
+      if: ${{ env.AISEARCH_ENDPOINT == '' }}
+      run: echo 'the variable "AISEARCH_ENDPOINT" has not been set'; false
     - name: Check out repo
       uses: actions/checkout@v2
     - name: Set up Python
