@@ -17,7 +17,7 @@ env:
 
 
 jobs:
-  run-pf:
+  run-promptflow:
     runs-on: ubuntu-latest 
     defaults:
       run:
