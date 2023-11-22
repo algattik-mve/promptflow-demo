@@ -1,9 +1,12 @@
 name: Test Prompts with Promptflow
+# modeled on https://github.com/Azure/llmops-gha-demo/blob/e87bec55c8ba3468e5d20668b712117b2ba17f7b/.github/workflows/deploy-pf-online-endpoint-pipeline.yml
 
 on:
   workflow_dispatch:
   push:
-    branches: [ main ]
+    branches:
+      - main
+      - ci
 
 jobs:
   run-pf:
@@ -14,8 +17,6 @@ jobs:
     steps:
     - name: Check out repo
       uses: actions/checkout@v2
-    - name: Install az ml extension
-      run: az extension add -n ml -y
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -24,5 +25,9 @@ jobs:
       run: ls
     - name: Install promptflow
       run: pip install -r requirements.txt
+    - name: Configure promptflow connections
+      run: |
+        pf connection create --file ../connections/azure_openai.yml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=https://${{ vars.OPENAPI_ENDPOINT }}
+        pf connection create --file ../connections/azure_ai_search.yml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=https://${{ vars.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
