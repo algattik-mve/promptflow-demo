@@ -8,6 +8,14 @@ on:
       - main
       - ci
 
+
+env: 
+  OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
+  OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
+  AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
+  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }}
+
+
 jobs:
   run-pf:
     runs-on: ubuntu-latest 
@@ -15,6 +23,9 @@ jobs:
       run:
         working-directory: chat-with-patents
     steps:
+    - name: "check is MY_SECRET exists"
+      if: ${{ env.OPENAPI_KEY == '' }}
+      run: echo 'the secret \"OPENAPI_KEY\" has not been made; to create it'; false
     - name: Check out repo
       uses: actions/checkout@v2
     - name: Set up Python
@@ -29,7 +40,7 @@ jobs:
       run: pip install keyrings.alt
     - name: Configure promptflow connections
       run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAPI_ENDPOINT }}
+        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAI_ENDPOINT }}
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
