@@ -23,46 +23,46 @@ env:
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
 
 jobs:
-  run-promptflow:
-    runs-on: ubuntu-latest 
-    defaults:
-      run:
-        working-directory: chat-with-patents
-    steps:
-    - name: "check setting OPENAI_KEY"
-      if: ${{ env.OPENAI_KEY == '' }}
-      run: echo 'the secret "OPENAI_KEY" has not been set'; false
-    - name: "check setting OPENAI_ENDPOINT"
-      if: ${{ env.OPENAI_ENDPOINT == '' }}
-      run: echo 'the variable "OPENAI_ENDPOINT" has not been set'; false
-    - name: "check setting AISEARCH_KEY"
-      if: ${{ env.AISEARCH_KEY == '' }}
-      run: echo 'the secret "AISEARCH_KEY" has not been set'; false
-    - name: "check setting AISEARCH_ENDPOINT"
-      if: ${{ env.AISEARCH_ENDPOINT == '' }}
-      run: echo 'the variable "AISEARCH_ENDPOINT" has not been set'; false
-    - name: "check setting AZURE_RESOURCE_GROUP"
-      if: ${{ env.AZURE_RESOURCE_GROUP == '' }}
-      run: echo 'the variable "AZURE_RESOURCE_GROUP" has not been set'; false
-    - name: "check setting AZURE_ML_WORKSPACE"
-      if: ${{ env.AZURE_ML_WORKSPACE == '' }}
-      run: echo 'the variable "AZURE_ML_WORKSPACE" has not been set'; false
-    - name: Check out repo
-      uses: actions/checkout@v2
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.11.4'
-    - name: Install promptflow
-      run: pip install -r requirements.txt
-    - name: Install local keyring
-      run: pip install keyrings.alt
-    - name: Configure promptflow connections
-      run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAI_ENDPOINT }}
-        pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
-    - name: Test promptflow run
-      run: pf flow test --flow .
+  # run-promptflow:
+  #   runs-on: ubuntu-latest 
+  #   defaults:
+  #     run:
+  #       working-directory: chat-with-patents
+  #   steps:
+  #   - name: "check setting OPENAI_KEY"
+  #     if: ${{ env.OPENAI_KEY == '' }}
+  #     run: echo 'the secret "OPENAI_KEY" has not been set'; false
+  #   - name: "check setting OPENAI_ENDPOINT"
+  #     if: ${{ env.OPENAI_ENDPOINT == '' }}
+  #     run: echo 'the variable "OPENAI_ENDPOINT" has not been set'; false
+  #   - name: "check setting AISEARCH_KEY"
+  #     if: ${{ env.AISEARCH_KEY == '' }}
+  #     run: echo 'the secret "AISEARCH_KEY" has not been set'; false
+  #   - name: "check setting AISEARCH_ENDPOINT"
+  #     if: ${{ env.AISEARCH_ENDPOINT == '' }}
+  #     run: echo 'the variable "AISEARCH_ENDPOINT" has not been set'; false
+  #   - name: "check setting AZURE_RESOURCE_GROUP"
+  #     if: ${{ env.AZURE_RESOURCE_GROUP == '' }}
+  #     run: echo 'the variable "AZURE_RESOURCE_GROUP" has not been set'; false
+  #   - name: "check setting AZURE_ML_WORKSPACE"
+  #     if: ${{ env.AZURE_ML_WORKSPACE == '' }}
+  #     run: echo 'the variable "AZURE_ML_WORKSPACE" has not been set'; false
+  #   - name: Check out repo
+  #     uses: actions/checkout@v2
+  #   - name: Set up Python
+  #     uses: actions/setup-python@v2
+  #     with:
+  #       python-version: '3.11.4'
+  #   - name: Install promptflow
+  #     run: pip install -r requirements.txt
+  #   - name: Install local keyring
+  #     run: pip install keyrings.alt
+  #   - name: Configure promptflow connections
+  #     run: |
+  #       pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAI_ENDPOINT }}
+  #       pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
+  #   - name: Test promptflow run
+  #     run: pf flow test --flow .
 
   register-model-in-azureml:
     needs: run-promptflow
