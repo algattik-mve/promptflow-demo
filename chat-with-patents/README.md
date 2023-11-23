@@ -62,7 +62,7 @@ After closing the wizard, wait for the indexing to be completed.
 if pf connection list | grep open_ai_connection; then
     echo "open_ai_connection already exists"
 else
-    pf connection create --file ../connections/azure_openai.yml --name open_ai_connection --set api_key=<your_api_key> api_base=https://<your openai name>.openai.azure.com
+    pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=<your_api_key> api_base=https://<your openai name>.openai.azure.com
 fi
 ```
 
