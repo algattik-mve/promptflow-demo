@@ -66,11 +66,12 @@ jobs:
     - name: Install az ml extension
       run: az extension add -n ml -y
     - name: Azure login
+      id: azlogin
       uses: azure/login@v1
       with:
         client-id: ${{ vars.AZURE_CLIENT_ID }}
         tenant-id: ${{ vars.AZURE_TENANT_ID }}
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     - name: Register promptflow model
-      if: ${{ steps.jobMetricAssert.outputs.result == 'true' }}
+      if: ${{ steps.azlogin.outcome == 'success' }}
       run: az ml model create --file promptflow/deployment/model.yaml  -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
