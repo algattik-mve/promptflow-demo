@@ -81,4 +81,4 @@ jobs:
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     - name: Register promptflow model
       if: ${{ steps.azlogin.outcome == 'success' }}
-      run: az ml model create --file promptflow/deployment/model.yaml  -g ${{env.AZURE_RESOURCE_GROUP}} -w ${{env.AZURE_ML_WORKSPACE}}
+      run: az ml model create --file chat-with-patents/deployment/model.yaml  -g ${{env.AZURE_RESOURCE_GROUP}} -w ${{env.AZURE_ML_WORKSPACE}}
