@@ -18,7 +18,6 @@ env:
 jobs:
 
   register-model-in-azureml:
-    needs: run-promptflow
     runs-on: ubuntu-latest 
     steps:
     - name: Azure login
