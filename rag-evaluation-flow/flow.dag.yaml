@@ -61,7 +61,7 @@ nodes:
     frequency_penalty: 0
     question: ${inputs.question}
     answer: ${inputs.answer}
-  connection: mve_azure_openai_connection
+  connection: open_ai_connection
   api: chat
   activate:
     when: ${validate_input.output.gpt_coherence}
@@ -96,7 +96,7 @@ nodes:
     answer: ${inputs.answer}
     ground_truth: ${inputs.ground_truth}
     question: ${inputs.question}
-  connection: mve_azure_openai_connection
+  connection: open_ai_connection
   api: chat
   activate:
     when: ${validate_input.output.gpt_similarity}
@@ -117,7 +117,7 @@ nodes:
     answer: ${inputs.answer}
     context: ${inputs.context}
     question: ${inputs.question}
-  connection: mve_azure_openai_connection
+  connection: open_ai_connection
   api: chat
   activate:
     when: ${validate_input.output.gpt_relevance}
@@ -137,7 +137,7 @@ nodes:
     frequency_penalty: 0
     answer: ${inputs.answer}
     question: ${inputs.question}
-  connection: mve_azure_openai_connection
+  connection: open_ai_connection
   api: chat
   activate:
     when: ${validate_input.output.gpt_fluency}
@@ -169,7 +169,7 @@ nodes:
     frequency_penalty: 0
     answer: ${inputs.answer}
     context: ${inputs.context}
-  connection: mve_azure_openai_connection
+  connection: open_ai_connection
   api: chat
   activate:
     when: ${validate_input.output.gpt_groundedness}
@@ -199,7 +199,7 @@ nodes:
     type: package
     tool: promptflow.tools.embedding.embedding
   inputs:
-    connection: mve_azure_openai_connection
+    connection: open_ai_connection
     deployment_name: text-embedding-ada-002
     input: ${inputs.ground_truth}
   activate:
@@ -212,7 +212,7 @@ nodes:
     type: package
     tool: promptflow.tools.embedding.embedding
   inputs:
-    connection: mve_azure_openai_connection
+    connection: open_ai_connection
     deployment_name: text-embedding-ada-002
     input: ${inputs.answer}
   activate:
