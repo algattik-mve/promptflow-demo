@@ -8,10 +8,6 @@ on:
       - main
       - federated-github-cred
 
-permissions:
-      id-token: write
-      contents: read
-
 env: 
   OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
   OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
