@@ -18,8 +18,8 @@ env:
   OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
   OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
-  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }}
-
+  AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
 
 jobs:
   run-promptflow:
@@ -74,4 +74,4 @@ jobs:
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     - name: Register promptflow model
       if: ${{ steps.azlogin.outcome == 'success' }}
-      run: az ml model create --file promptflow/deployment/model.yaml  -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
+      run: az ml model create --file promptflow/deployment/model.yaml  -g ${{env.AZURE_RESOURCE_GROUP}} -w ${{env.AZURE_ML_WORKSPACE}}
