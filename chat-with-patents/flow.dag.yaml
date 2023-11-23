@@ -16,7 +16,7 @@ outputs:
     reference: ${generate_prompt_context.output}
   search_result:
     type: string
-    reference: ${search_question_from_vector_db.output}
+    reference: ${generate_document_list.output}
 nodes:
 - name: embed_the_question
   type: python
@@ -51,6 +51,13 @@ nodes:
   use_variants: false
 - name: answer_the_question_with_context
   use_variants: true
+- name: generate_document_list
+  type: python
+  source:
+    type: code
+    path: generate_document_list.py
+  inputs:
+    search_result: ${search_question_from_vector_db.output}
 node_variants:
   answer_the_question_with_context:
     default_variant_id: variant_0
