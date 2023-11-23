@@ -1,6 +1,6 @@
 $schema: https://azuremlschemas.azureedge.net/latest/model.schema.json
 name: chat-with-patents
-path: ../chat-with-patents
+path: ..
 stage: Production
 description: Chat with patents flow
 properties:
