@@ -47,8 +47,9 @@ Deploy the following Azure Resources
 
 ## Grant Azure resource access
 
-Grant the following RBAC role
+Grant the following RBAC role to allow the pipeline to deploy models:
 
 - Identity: the application you created for CD
 - Resource: your Azure ML workspace
-- Role: ?????
+- Role: [`AzureML Data Scientist`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#azureml-data-scientist)
+
