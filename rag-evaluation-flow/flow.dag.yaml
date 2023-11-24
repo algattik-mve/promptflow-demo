@@ -5,20 +5,42 @@ environment:
 inputs:
   question:
     type: string
-    default: Which camping table holds the most weight?
+    default: For which usages are the two valve engines still produced in the US?
     is_chat_input: false
   answer:
     type: string
-    default: The Alpine Explorer Tent is the most waterproof.
+    default: Based on the given context, the two valve engines are widely used in
+      the world, in the US especially for agriculture, marine and industrial
+      purposes.
     is_chat_input: false
   context:
     type: string
-    default: From the our product list, thwe alpine explorer tent is the most
-      waterproof. The Adventure Dining Tabbe has higher weight.
+    default: "Content: Most modern highly refined four cycle diesel engines today,
+      in the displacement range from 10 to 16 liters, run at about 2000 rpm with
+      average piston speeds of about 2000 feet per minute. Most of the engines
+      are used for over-the-highway longdistance hauling (class 8 trucks) with
+      power outputs up to 400 to 450 BHP. At least in the United States, the
+      engines utilize four-valve-per-cylinder designs. Some of these engines are
+      also used for industrial, marine and construction equipment. Other than
+      some much larger military industrial, generating and marine engines which
+      have used four valves per cylinders practically since the end of World War
+      II, these newer American engines are the only four-valve-per-cylinder
+      large diesels in the world today, and are produced in relatively small
+      numbers by only about five U.S. companies. In the rest of the industrial
+      world (Europe and Japan) as well as in the U.S. for all other applications
+      (class 7 and smaller trucks, agricultural, marine, industrial, buses,
+      etc.) the bulk of production is based in old two valve technology. The
+      situation is mostly due to the multiplicity of manufacturers (dozens) and
+      the myriad of uses (as many as three to four thousand different models
+      being available), as well as the very high costs of development, tooling
+      and manufacturing new designs for such stratified markets. \\nSource:
+      US-5285755-A Open chamber diesel engine having a piston with recesses
+      therein"
     is_chat_input: false
   ground_truth:
     type: string
-    default: The Alpine Explorer Tent has the highest rainfly waterproof rating at 3000m
+    default: Two valve engines are produced for the US market to be used in class 7
+      and smaller trucks, agricultural, marine, industrial, buses, etc.
     is_chat_input: false
   metrics:
     type: string
