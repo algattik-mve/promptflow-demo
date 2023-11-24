@@ -49,8 +49,10 @@ jobs:
         sed -i "s/PRT_CONFIG_OVERRIDE:.*/PRT_CONFIG_OVERRIDE: $PRT_CONFIG_OVERRIDE/g" deployment/deployment.yaml
     - name: Setup deployment
       run: |
-        az ml online-deployment create --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}} --all-traffic || \
+        az ml online-deployment create --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}} || \
         az ml online-deployment update --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}}
+    - name: Updating endpoint traffic
+      run: az ml online-endpoint update -n ${{env.ENDPOINT_NAME}} --traffic "${{env.DEPLOYMENT_NAME}}=100"
     - name: Check the status of the endpoint
       run: az ml online-endpoint show -n ${{env.ENDPOINT_NAME}}
     - name: Check the status of the deployment
