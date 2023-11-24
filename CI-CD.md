@@ -33,7 +33,6 @@ Deploy the following Azure Resources
 | -------------- | --------------------------------------------------------- | ------- |
 | `AISEARCH_KEY` | The access key for your deployed Azure AI Search instance |         |
 | `OPENAI_KEY`   | The access key for your deployed Azure OpenAI instance    |         |
-|                |                                                           |         |
 
 ### Variables
 
@@ -45,6 +44,17 @@ Deploy the following Azure Resources
 | `AZURE_TENANT_ID`       | The tenant ID of Azure resources                        | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
 | `OPENAI_ENDPOINT`       | The endpoint for your deployed Azure OpenAI instance    | `https://mve.openai.azure.com`         |
 
+## Create connections in Azure ML
+
+In Azure ML Studio, under `Prompt flow`, in the `Connections` tab, create the following connections:
+
+| Connection name        | Connection type    | Description                                             |
+| ---------------------- | ------------------ | ------------------------------------------------------- |
+| `open_ai_connection`   | `Azure OpenAI`     | Configure the endpoint of your Azure OpenAI instance    |
+| `ai_search_connection` | `Cognitive search` | Configure the endpoint of your Azure AI Search instance |
+
+The connections are used by the Azure ML endpoint deployed by the pipeline.
+
 ## Grant Azure resource access
 
 Grant the following RBAC role to allow the pipeline to deploy models:
@@ -52,4 +62,14 @@ Grant the following RBAC role to allow the pipeline to deploy models:
 - Identity: the application you created for CD
 - Resource: your Azure ML workspace
 - Role: [`AzureML Data Scientist`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#azureml-data-scientist)
+
+## Grant Endpoint permissions resource access
+
+After the CI/CD pipeline has run a first time, the endpoint will be created, but is missing the permissions to retrieve secrets to authenticate to Azure OpenAI and Azure AI Search.
+
+Grant the following RBAC role to [allow the endpoint to retrieve secrets](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/flow-deploy?tabs=azure-studio#grant-permissions-to-the-endpoint):
+
+- Identity:  `Managed identity` -> ` Machine Learning online endpoint` -> `chat-with-patents`
+- Resource: your Azure ML workspace
+- Role: `Azure Machine Learning Workspace Connection Secrets Reader`
 
