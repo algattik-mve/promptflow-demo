@@ -67,9 +67,16 @@ Grant the following RBAC role to allow the pipeline to deploy models:
 
 After the CI/CD pipeline has run a first time, the endpoint will be created, but is missing the permissions to retrieve secrets to authenticate to Azure OpenAI and Azure AI Search.
 
-Grant the following RBAC role to [allow the endpoint to retrieve secrets](https://learn.microsoft.com/en-us/azure/ai-studio/how-to/flow-deploy?tabs=azure-studio#grant-permissions-to-the-endpoint):
+The pipeline contains a step to invoke the model, which will then fail with an error similar to:
+
+```text
+Access denied to list workspace secret due to invalid authentication. Please assign RBAC role 'Azure Machine Learning Workspace Connection Secrets Reader' to the endpoint for current workspace, and wait for a few minutes to make sure the new role takes effect. More details can be found in https://aka.ms/pf-deploy-identity.
+```
+
+Grant the following RBAC role to [allow the endpoint to retrieve secrets](https://aka.ms/pf-deploy-identity):
 
 - Identity:  `Managed identity` -> ` Machine Learning online endpoint` -> `chat-with-patents`
 - Resource: your Azure ML workspace
 - Role: `Azure Machine Learning Workspace Connection Secrets Reader`
 
+After that, rerun the pipeline.
