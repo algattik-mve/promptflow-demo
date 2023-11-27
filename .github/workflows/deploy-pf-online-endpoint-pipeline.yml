@@ -8,46 +8,54 @@ on:
   #   types:
   #     - completed
 
+permissions:
+      id-token: write
+      contents: read
+
 env: 
-  GROUP: ${{secrets.GROUP}}
-  WORKSPACE: ${{secrets.WORKSPACE}}
-  SUBSCRIPTION: ${{secrets.SUBSCRIPTION}}
+  AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
   ENDPOINT_NAME: chat-with-patents
-  DEPLOYMENT_NAME: dev
 
 jobs:
   create-endpoint-and-deploy-pf:
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: chat-with-patents
     # if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }} 
     steps:
     - name: Check out repo
       uses: actions/checkout@v2
-    - name: Install az ml extension
-      run: az extension add -n ml -y
     - name: Azure login
       uses: azure/login@v1
       with:
-        creds: ${{secrets.AZURE_CREDENTIALS}}
-    - name: Set default subscription
-      run: |
-         az account set -s ${{env.SUBSCRIPTION}}
-    - name: Create Hash
-      run: echo "HASH=$(echo -n $RANDOM | sha1sum | cut -c 1-6)" >> "$GITHUB_ENV"
-    - name: Create unique endpoint name   
-      run: echo "ENDPOINT_NAME=$(echo 'chat-with-patents-'$HASH)" >> "$GITHUB_ENV"
-    - name: Display endpoint name
-      run: echo "Endpoint name is:" ${{env.ENDPOINT_NAME}}
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    - name: Install az ml extension
+      run: az extension add -n ml -y
+    - name: Set Azure CLI defaults
+      run: az configure --defaults group=${{env.AZURE_RESOURCE_GROUP}} workspace=${{env.AZURE_ML_WORKSPACE}}
     - name: Setup endpoint
-      run: az ml online-endpoint create --file promptflow/deployment/endpoint.yaml  --name ${{env.ENDPOINT_NAME}} -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
+      run: |
+        az ml online-endpoint create --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}} || \
+        az ml online-endpoint update --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}}
+    - name: Get deployment name
+      run: echo "DEPLOYMENT_NAME=$(yq -r .name deployment/deployment.yaml)" >> "$GITHUB_ENV"
     - name: Update deployment PRT_CONFIG variable
       run: |
-        PRT_CONFIG_OVERRIDE=deployment.subscription_id=${{ env.SUBSCRIPTION }},deployment.resource_group=${{ env.GROUP }},deployment.workspace_name=${{ env.WORKSPACE }},deployment.endpoint_name=${{ env.ENDPOINT_NAME }},deployment.deployment_name=${{ env.DEPLOYMENT_NAME }}
-        sed -i "s/PRT_CONFIG_OVERRIDE:.*/PRT_CONFIG_OVERRIDE: $PRT_CONFIG_OVERRIDE/g" promptflow/deployment/deployment.yaml
+        PRT_CONFIG_OVERRIDE=deployment.subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID }},deployment.resource_group=${{ env.AZURE_RESOURCE_GROUP }},deployment.workspace_name=${{ env.AZURE_ML_WORKSPACE }},deployment.endpoint_name=${{ env.ENDPOINT_NAME }},deployment.deployment_name=${{ env.DEPLOYMENT_NAME }}
+        sed -i "s/PRT_CONFIG_OVERRIDE:.*/PRT_CONFIG_OVERRIDE: $PRT_CONFIG_OVERRIDE/g" deployment/deployment.yaml
     - name: Setup deployment
-      run: az ml online-deployment create --file promptflow/deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}} --all-traffic -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
+      run: |
+        az ml online-deployment create --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}} || \
+        az ml online-deployment update --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}}
+    - name: Updating endpoint traffic
+      run: az ml online-endpoint update -n ${{env.ENDPOINT_NAME}} --traffic "${{env.DEPLOYMENT_NAME}}=100"
     - name: Check the status of the endpoint
-      run: az ml online-endpoint show -n ${{env.ENDPOINT_NAME}} -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
+      run: az ml online-endpoint show -n ${{env.ENDPOINT_NAME}}
     - name: Check the status of the deployment
-      run: az ml online-deployment get-logs --name blue --endpoint-name ${{env.ENDPOINT_NAME}} -g ${{env.GROUP}} -w ${{env.WORKSPACE}}
+      run: az ml online-deployment get-logs --name ${{env.DEPLOYMENT_NAME}} --endpoint-name ${{env.ENDPOINT_NAME}}
     - name: Invoke model
-      run: az ml online-endpoint invoke --name ${{env.ENDPOINT_NAME}} --request-file promptflow/deployment/sample-request.json  -g ${{env.GROUP}} -w ${{env.WORKSPACE}} 
+      run: az ml online-endpoint invoke --name ${{env.ENDPOINT_NAME}} --request-file deployment/sample-request.json
