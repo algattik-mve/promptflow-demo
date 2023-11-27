@@ -6,13 +6,21 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
+
+permissions:
+      id-token: write
+      contents: read
 
 env: 
   OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
   OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
-  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }}
-
+  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }} 
+  AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
+  AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
 
 jobs:
   run-promptflow:
@@ -33,6 +41,12 @@ jobs:
     - name: "check setting AISEARCH_ENDPOINT"
       if: ${{ env.AISEARCH_ENDPOINT == '' }}
       run: echo 'the variable "AISEARCH_ENDPOINT" has not been set'; false
+    - name: "check setting AZURE_RESOURCE_GROUP"
+      if: ${{ env.AZURE_RESOURCE_GROUP == '' }}
+      run: echo 'the variable "AZURE_RESOURCE_GROUP" has not been set'; false
+    - name: "check setting AZURE_ML_WORKSPACE"
+      if: ${{ env.AZURE_ML_WORKSPACE == '' }}
+      run: echo 'the variable "AZURE_ML_WORKSPACE" has not been set'; false
     - name: Check out repo
       uses: actions/checkout@v2
     - name: Set up Python
@@ -49,3 +63,23 @@ jobs:
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
+
+  register-model-in-azureml:
+    needs: run-promptflow
+    runs-on: ubuntu-latest 
+    steps:
+    - name: Check out repo
+      uses: actions/checkout@v2
+    - name: Install az ml extension
+      run: az extension add -n ml -y
+    - name: Azure login
+      id: azlogin
+      uses: azure/login@v1
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+    - name: Set Azure CLI defaults
+      run: az configure --defaults group=${{env.AZURE_RESOURCE_GROUP}} workspace=${{env.AZURE_ML_WORKSPACE}}
+    - name: Register promptflow model
+      run: az ml model create --file chat-with-patents/deployment/model.yaml
