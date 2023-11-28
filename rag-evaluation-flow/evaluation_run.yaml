@@ -1,0 +1,12 @@
+display_name: rag-evaluation-flow_${variant_id}_${timestamp} # supported: ${variant_id},${timestamp},${run}
+flow: .
+data: ../data/data.jsonl # path to the file with ground truth
+# run: chat-with-patents_XXX # replace with id of the run of the Q&A flow on the same batch data set, or provide in command line
+column_mapping: 
+  # the flow's input columns must be either mapped to the inputs/outputs of the run,
+  # fields in the ground truth data file, or provided with a given value.
+  question: ${run.inputs.question}
+  answer: ${run.outputs.output}
+  context: ${run.outputs.context}
+  ground_truth: ${data.groundtruth}
+  metrics: all
