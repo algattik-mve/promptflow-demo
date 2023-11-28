@@ -1,5 +1,7 @@
-id: bring_your_own_data_qna
-name: Bring Your Own Data QnA
+id: qna_over_patents
+name: QnA solution over patents dataset
+environment:
+  python_requirements_txt: requirements.txt
 inputs:
   question:
     type: string
@@ -9,6 +11,12 @@ outputs:
   output:
     type: string
     reference: ${answer_the_question_with_context.output}
+  context:
+    type: string
+    reference: ${generate_prompt_context.output}
+  search_result:
+    type: string
+    reference: ${generate_document_list.output}
 nodes:
 - name: embed_the_question
   type: python
@@ -28,8 +36,6 @@ nodes:
   inputs:
     connection: ai_search_connection
     index_name: patents
-    search_filters: ""
-    search_params: ""
     text_field: ""
     vector_field: contentVector
     top_k: 2
@@ -43,42 +49,76 @@ nodes:
   inputs:
     search_result: ${search_question_from_vector_db.output}
   use_variants: false
-- name: Prompt_variants
-  use_variants: true
 - name: answer_the_question_with_context
-  type: llm
+  use_variants: true
+- name: generate_document_list
+  type: python
   source:
     type: code
-    path: answer_the_question_with_context.jinja2
+    path: generate_document_list.py
   inputs:
-    deployment_name: gpt-35-turbo
-    temperature: 0
-    top_p: 1
-    stop: ""
-    max_tokens: 1000
-    presence_penalty: 0
-    frequency_penalty: 0
-    logit_bias: ""
-    prompt_text: ${Prompt_variants.output}
-  provider: AzureOpenAI
-  connection: open_ai_connection
-  api: chat
-  module: promptflow.tools.aoai
-  use_variants: false
+    search_result: ${search_question_from_vector_db.output}
 node_variants:
-  Prompt_variants:
+  answer_the_question_with_context:
     default_variant_id: variant_0
     variants:
       variant_0:
         node:
-          name: Prompt_variants
-          type: prompt
+          type: llm
           source:
             type: code
-            path: Prompt_variants.jinja2
+            path: qna_prompt_1.jinja2
           inputs:
-            contexts: ${generate_prompt_context.output}
+            deployment_name: gpt-35-turbo
+            temperature: 0
+            top_p: 1
+            max_tokens: 1000
+            presence_penalty: 0
+            frequency_penalty: 0
             question: ${inputs.question}
-environment:
-  python_requirements_txt: requirements.txt
-
+            contexts: ${generate_prompt_context.output}
+          provider: AzureOpenAI
+          connection: open_ai_connection
+          api: chat
+          module: promptflow.tools.aoai
+          use_variants: false
+      variant_1:
+        node:
+          type: llm
+          source:
+            type: code
+            path: qna_prompt_2.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            temperature: 0
+            top_p: 1
+            max_tokens: 1000
+            presence_penalty: 0
+            frequency_penalty: 0
+            question: ${inputs.question}
+            contexts: ${generate_prompt_context.output}
+          provider: AzureOpenAI
+          connection: open_ai_connection
+          api: chat
+          module: promptflow.tools.aoai
+          use_variants: false
+      variant_2:
+        node:
+          type: llm
+          source:
+            type: code
+            path: qna_prompt_2.jinja2
+          inputs:
+            deployment_name: gpt-35-turbo
+            temperature: 0.9
+            top_p: 1
+            max_tokens: 1000
+            presence_penalty: 0
+            frequency_penalty: 0
+            question: ${inputs.question}
+            contexts: ${generate_prompt_context.output}
+          provider: AzureOpenAI
+          connection: open_ai_connection
+          api: chat
+          module: promptflow.tools.aoai
+          use_variants: false
