@@ -45,17 +45,30 @@ pf flow test --flow . --inputs question="How does the car know how much fuel is 
 ```
 
 #### Batch execution
-The flow can be executed for a large number of test cases using CLI:
+The flow can be executed for a large number of test cases using CLI.
+
+##### Source data run
+
+In `../chat-with-patents`, run:
+
+```
+pf run create --file batch_run.yaml
+```
+
+Take note of the resulting run name, such as `chat_with_patents_variant_0_20231128_093909_940924`.
+
+##### Evaluation run
 
 1. Using yaml config of the run:
 
-_Example:_
+Create a file `evaluation_run.yaml     ` with the content:
+
 ```yaml
-name: rag-evaluation-flow_default_20231124_174856_894000
+# name: rag-evaluation-flow_default_20231124_174856_894000
 display_name: rag-evaluation-flow_${variant_id}_${timestamp} # supported: ${variant_id},${timestamp},${run}
-flow: /path/to/repo/promptflow-demo/rag-evaluation-flow
-data: /path/to/repo/promptflow-demo/data/data.jsonl
-run: chat-with-patents_default_20231123_164401_111000
+flow: .
+data: ../data/data.jsonl
+run: chat-with-patents_XXX # replace with chat-with-patents run name
 column_mapping:
   question: ${run.inputs.question}
   answer: ${run.outputs.output}
@@ -69,7 +82,15 @@ column_mapping:
  - column_mapping: the flow's input columns must be either mapped to the inputs/outputs of the run, fields in the ground truth data file, or provided with a proper value (example: selection of the metrics)
 
 ```bash
-pf run create --flow . --file ./yaml_file_with_evaluation_run_config.yaml     
+pf run create --flow . --file evaluation_run.yaml     
+```
+
+Take note of the run name.
+
+To visualize the outputs in a browser:
+
+```bash
+pf run visualize --name RUN_NAME
 ```
 
 2. Using CLI without yaml configuration file:

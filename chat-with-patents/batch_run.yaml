@@ -1,0 +1,7 @@
+$schema: https://azuremlschemas.azureedge.net/promptflow/latest/Run.schema.json
+#name: <Uncomment to select a hard-coded name, otherwise a random name will be generated>
+flow: .
+data: ../data/data.jsonl
+#run: <Uncomment to select a run input>
+column_mapping:
+  question: ${data.question}
