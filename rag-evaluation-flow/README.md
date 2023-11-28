@@ -75,5 +75,5 @@ pf run create --flow . --file ./yaml_file_with_evaluation_run_config.yaml
 2. Using CLI without yaml configuration file:
 
 ```bash
-pf run create --flow . --data ../data/data.jsonl --run "chat-with-patents_default_20231123_164401_111000" --column-mapping ground_truth='${data.ground truth}' question='${run.inputs.question}' answer='${run.outputs.output}' context='${run.outputs.context}' metrics='all' --stream
+pf run create --flow . --data ../data/data.jsonl --run "chat-with-patents_default_20231123_164401_111000" --column-mapping ground_truth='${data.groundtruth}' question='${run.inputs.question}' answer='${run.outputs.output}' context='${run.outputs.context}' metrics='all' --stream
 ```
