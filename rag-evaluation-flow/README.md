@@ -47,7 +47,7 @@ The flow can be executed in two modes - single case and batch execution.
 The flow can be executed with just one example using CLI and providing the inputs:
 
 ```bash
-pf flow test --flow . --inputs question="How does the car know how much fuel is in the tank?" answer="Turn on engine and look at the dashboard" ground_truth="Dashboard has a fuel gauge" context="The car is equipped with many gauges. When the engine is turned on you can check the battery level, fuel level, oil temperature."
+pf flow test --flow . --inputs question="How does the driver know how much fuel is in the tank?" answer="Turn on engine and look at the dashboard" ground_truth="Dashboard has a fuel gauge" context="The car is equipped with many gauges. When the engine is turned on you can check the battery level, fuel level, oil temperature."
 ```
 
 #### Batch execution
