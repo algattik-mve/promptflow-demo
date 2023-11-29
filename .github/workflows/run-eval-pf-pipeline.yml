@@ -48,14 +48,14 @@ jobs:
     - name: "check setting AZURE_ML_WORKSPACE"
       if: ${{ env.AZURE_ML_WORKSPACE == '' }}
       run: echo 'the variable "AZURE_ML_WORKSPACE" has not been set'; false
+    - name: Check out repo
+      uses: actions/checkout@v2
     - name: "check settings"
       run: |
         set -u
         for i in PWD AZURE_ML_WORKSPACE AZURE_RESOURCE_GROUP
           do echo "Checking \$$i is set..."; printenv $i > /dev/null
         done
-    - name: Check out repo
-      uses: actions/checkout@v2
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
