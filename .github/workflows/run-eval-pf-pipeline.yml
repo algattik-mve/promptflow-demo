@@ -21,6 +21,9 @@ env:
   AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }} 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
+  AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
+  AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
+  AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
 
 jobs:
   run-promptflow:
@@ -29,26 +32,23 @@ jobs:
       run:
         working-directory: chat-with-patents
     steps:
-    - name: "check setting OPENAI_KEY"
-      if: ${{ env.OPENAI_KEY == '' }}
-      run: echo 'the secret "OPENAI_KEY" has not been set'; false
-    - name: "check setting OPENAI_ENDPOINT"
-      if: ${{ env.OPENAI_ENDPOINT == '' }}
-      run: echo 'the variable "OPENAI_ENDPOINT" has not been set'; false
-    - name: "check setting AISEARCH_KEY"
-      if: ${{ env.AISEARCH_KEY == '' }}
-      run: echo 'the secret "AISEARCH_KEY" has not been set'; false
-    - name: "check setting AISEARCH_ENDPOINT"
-      if: ${{ env.AISEARCH_ENDPOINT == '' }}
-      run: echo 'the variable "AISEARCH_ENDPOINT" has not been set'; false
-    - name: "check setting AZURE_RESOURCE_GROUP"
-      if: ${{ env.AZURE_RESOURCE_GROUP == '' }}
-      run: echo 'the variable "AZURE_RESOURCE_GROUP" has not been set'; false
-    - name: "check setting AZURE_ML_WORKSPACE"
-      if: ${{ env.AZURE_ML_WORKSPACE == '' }}
-      run: echo 'the variable "AZURE_ML_WORKSPACE" has not been set'; false
     - name: Check out repo
       uses: actions/checkout@v2
+    - name: "check settings"
+      run: |
+        set -u
+        for i in \
+          OPENAI_KEY \
+          OPENAI_ENDPOINT \
+          AISEARCH_KEY \
+          AISEARCH_ENDPOINT \
+          AZURE_RESOURCE_GROUP \
+          AZURE_ML_WORKSPACE \
+          AZURE_CLIENT_ID \
+          AZURE_TENANT_ID \
+          AZURE_SUBSCRIPTION_ID \
+          ; do echo "Checking \$$i is set..."; printenv $i > /dev/null
+        done
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -59,10 +59,24 @@ jobs:
       run: pip install keyrings.alt
     - name: Configure promptflow connections
       run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ secrets.OPENAI_KEY }} api_base=${{ vars.OPENAI_ENDPOINT }}
-        pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
+        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_KEY }} api_base=${{ env.OPENAI_ENDPOINT }}
+        pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
+    - name: Run promptflow batch
+      run: pf run create --file batch_run.yaml --name batch_run
+    - name: Run promptflow evaluation
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
+    - name: Visualize promptflow runs
+      # When run non-interactively, this produces an HTML file in /tmp
+      run: |
+        pf run visualize --name batch_run 
+        pf run visualize --name evaluation_run 
+    - name: Archive promptflow run visualizations
+      uses: actions/upload-artifact@v3
+      with:
+        name: promptflow-visualizations
+        path: /tmp/*.html
 
   register-model-in-azureml:
     needs: run-promptflow
@@ -76,9 +90,9 @@ jobs:
       id: azlogin
       uses: azure/login@v1
       with:
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ env.AZURE_CLIENT_ID }}
+        tenant-id: ${{ env.AZURE_TENANT_ID }}
+        subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
     - name: Set Azure CLI defaults
       run: az configure --defaults group=${{env.AZURE_RESOURCE_GROUP}} workspace=${{env.AZURE_ML_WORKSPACE}}
     - name: Register promptflow model

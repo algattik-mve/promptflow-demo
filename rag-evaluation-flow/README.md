@@ -58,40 +58,24 @@ The flow can be executed for a large number of test cases using CLI.
 
 In `../chat-with-patents`, run:
 
-```bash
-pf run create --file batch_run.yaml
+```
+run_name="chat_with_patents_"$(openssl rand -hex 12)
 ```
 
-Take note of the resulting run name, such as `chat_with_patents_variant_0_20231128_093909_940924`.
+```bash
+pf run create --file batch_run.yaml --name "$run_name"
+```
 
 ##### Evaluation run
 
 1. Using yaml config of the run:
 
-Create a file `evaluation_run.yaml` with the content:
-
-```yaml
-# name: rag-evaluation-flow_default_20231124_174856_894000
-display_name: rag-evaluation-flow_${variant_id}_${timestamp} # supported: ${variant_id},${timestamp},${run}
-flow: .
-data: ../data/data.jsonl
-run: chat-with-patents_XXX # replace with chat-with-patents run name
-column_mapping:
-  question: ${run.inputs.question}
-  answer: ${run.outputs.output}
-  context: ${run.outputs.context}
-  ground_truth: ${data.groundtruth}
-  metrics: all
+```
+eval_run_name="eval_"$(openssl rand -hex 12)
 ```
 
- Where:
-
-- data: provide path to the file with ground truth
-- run: id of the run of the Q&A flow on the same batch data set
-- column_mapping: the flow's input columns must be either mapped to the inputs/outputs of the run, fields in the ground truth data file, or provided with a proper value (example: selection of the metrics)
-
 ```bash
-pf run create --flow . --file evaluation_run.yaml     
+pf run create --file evaluation_run.yaml --run "$run_name" --name "$eval_run_name"
 ```
 
 Take note of the run name.
@@ -99,11 +83,11 @@ Take note of the run name.
 To visualize the outputs in a browser:
 
 ```bash
-pf run visualize --name RUN_NAME
+pf run visualize --name "$eval_run_name"
 ```
 
 2. Using CLI without yaml configuration file:
 
 ```bash
-pf run create --flow . --data ../data/data.jsonl --run "chat-with-patents_default_20231123_164401_111000" --column-mapping ground_truth='${data.groundtruth}' question='${run.inputs.question}' answer='${run.outputs.output}' context='${run.outputs.context}' metrics='all' --stream
+pf run create --flow . --data ../data/data.jsonl --run "$run_name" --column-mapping ground_truth='${data.groundtruth}' question='${run.inputs.question}' answer='${run.outputs.output}' context='${run.outputs.context}' metrics='all' --stream
 ```
