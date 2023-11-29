@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
   push:
     branches:
+      - feature/100-questions
       - main
   pull_request:
     branches:
