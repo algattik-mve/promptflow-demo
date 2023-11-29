@@ -64,12 +64,14 @@ jobs:
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
-    - name: promptflow batch run
+    - name: Run promptflow batch
       run: pf run create --file batch_run.yaml --name batch_run
-    - name: promptflow evaluation run
+    - name: Run promptflow evaluation
       run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
-    - name: Test promptflow run
-      run: pf run visualize --name evaluation_run 
+    - name: Visualize promptflow runs
+      run: |
+        pf run visualize --name batch_run 
+        pf run visualize --name evaluation_run 
     - name: Archive code coverage results
       uses: actions/upload-artifact@v3
       with:
