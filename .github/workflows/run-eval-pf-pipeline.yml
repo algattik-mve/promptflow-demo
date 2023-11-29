@@ -52,7 +52,7 @@ jobs:
       run: |
         set -u
         for i in PWD AZURE_ML_WORKSPACE AZURE_RESOURCE_GROUP
-          do echo "Checking \$$i is set..."; printenv ${!i} > /dev/null
+          do echo "Checking \$$i is set..."; printenv $i > /dev/null
         done
     - name: Check out repo
       uses: actions/checkout@v2
