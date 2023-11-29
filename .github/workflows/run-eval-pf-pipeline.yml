@@ -69,13 +69,14 @@ jobs:
     - name: Run promptflow evaluation
       run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
     - name: Visualize promptflow runs
+      # When run non-interactively, this produces an HTML file in /tmp
       run: |
         pf run visualize --name batch_run 
         pf run visualize --name evaluation_run 
-    - name: Archive code coverage results
+    - name: Archive promptflow run visualizations
       uses: actions/upload-artifact@v3
       with:
-        name: evaluation
+        name: promptflow-visualizations
         path: /tmp/*.html
 
   register-model-in-azureml:
