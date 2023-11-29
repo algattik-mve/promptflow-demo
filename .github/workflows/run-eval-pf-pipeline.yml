@@ -63,6 +63,15 @@ jobs:
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ secrets.AISEARCH_KEY }} api_base=${{ vars.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
+    - name: Test promptflow run
+      run: pf run create --file batch_run.yaml --name ag1
+    - name: Test promptflow run
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run ag1 --name ag2 
+    - name: Test promptflow run
+      run: pf run show-details --name ag2 
+    - name: Test promptflow run
+      run: pf run visualize --name ag2 
+      
 
   register-model-in-azureml:
     needs: run-promptflow
