@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - main
-      - feature/ci-evaluation
   pull_request:
     branches:
       - main
