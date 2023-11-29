@@ -56,7 +56,7 @@ jobs:
     - name: "check settings"
       run: |
         set -u
-        for i in
+        for i in \
           OPENAI_KEY \
           OPENAI_ENDPOINT \
           AISEARCH_KEY \
