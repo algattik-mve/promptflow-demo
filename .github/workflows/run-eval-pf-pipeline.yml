@@ -15,8 +15,8 @@ permissions:
       contents: read
 
 env: 
-  OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
-  OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_KEY }} 
+  OPENAI_API_BASE: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
   AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }} 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
@@ -38,8 +38,8 @@ jobs:
       run: |
         set -u
         for i in \
-          OPENAI_KEY \
-          OPENAI_ENDPOINT \
+          OPENAI_API_KEY \
+          OPENAI_API_BASE \
           AISEARCH_KEY \
           AISEARCH_ENDPOINT \
           AZURE_RESOURCE_GROUP \
@@ -59,7 +59,7 @@ jobs:
       run: pip install keyrings.alt
     - name: Configure promptflow connections
       run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_KEY }} api_base=${{ env.OPENAI_ENDPOINT }}
+        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_API_KEY }} api_base=${{ env.OPENAI_API_BASE }}
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
