@@ -56,37 +56,32 @@ Sample output:
 
 ## How run the flow
 
-> **Note:** the flow needs *all* of the following environment variables to be provided in order to configure Ragas
-> library. The values below are just examples and need to be replaced with your own values.
+### Create .env file in this folder with below content
+
+```
+OPENAI_API_TYPE="azure"
+OPENAI_API_VERSION="2023-05-15"
+OPENAI_API_BASE="https://<myopenaiservice>.openai.azure.com/"
+OPENAI_API_KEY="<Azure Open AI key>"
+CHAT_MODEL="gpt-35-turbo"
+CHAT_DEPLOYMENT="gpt-35-turbo"
+EMBEDDING_MODEL="text-embedding-ada-002"
+EMBEDDING_DEPLOYMENT="text-embedding-ada-002"
+```
+
+> **Note:** the flow needs ***all*** of the environment variables to be provided in order to configure Ragas library.
+> The values above are just examples and need to be replaced with your own values.
+
+### Test run using default inputs
+
+```bash
+pf flow test --flow .
+```
 
 ### Batch run against another flow run
 
 To run the `ragas-eval-flow` against a named run of the `chat-with-patents` flow, run the following command:
 
 ```bash
-pf run create -f ragas_eval_run.yaml --run <chat with patents run name> \
-	--environment-variables \
-	OPENAI_API_TYPE="azure" \
-	OPENAI_API_VERSION="2023-05-15" \
-	OPENAI_API_BASE="https://<myopenaiservice>.openai.azure.com/" \
-	OPENAI_API_KEY="<Azure Open AI key>" \
-	CHAT_MODEL="gpt-35-turbo" \
-	CHAT_DEPLOYMENT="gpt-35-turbo" \
-	EMBEDDING_MODEL="text-embedding-ada-002" \
-	EMBEDDING_DEPLOYMENT="text-embedding-ada-002"
-```
-
-### Test run using default inputs
-
-```bash
-pf flow test --flow . \
-	--environment-variables \
-	OPENAI_API_TYPE="azure" \
-	OPENAI_API_VERSION="2023-05-15" \
-	OPENAI_API_BASE="https://<myopenaiservice>.openai.azure.com/" \
-	OPENAI_API_KEY="<Azure Open AI key>" \
-	CHAT_MODEL="gpt-35-turbo" \
-	CHAT_DEPLOYMENT="gpt-35-turbo" \
-	EMBEDDING_MODEL="text-embedding-ada-002" \
-	EMBEDDING_DEPLOYMENT="text-embedding-ada-002"
+pf run create -f ragas_eval_run.yaml --run <chat with patents run name>
 ```

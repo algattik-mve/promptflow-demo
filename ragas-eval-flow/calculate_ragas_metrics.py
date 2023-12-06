@@ -4,6 +4,7 @@ import datasets
 from promptflow import tool
 from ragas.metrics.critique import harmfulness
 from ragas import evaluate
+from dotenv import load_dotenv
 
 from ragas.metrics import (
     context_precision,
@@ -30,7 +31,9 @@ def calculate_ragas_metrics(
         }
     )
 
-    # read the environment variables
+    # load environment variables
+    load_dotenv(os.path.join(os.path.dirname(__file__), ".env"), override=True)
+
     openai_api_type = os.getenv("OPENAI_API_TYPE")
     openai_api_version = os.getenv("OPENAI_API_VERSION")
     openai_api_base = os.getenv("OPENAI_API_BASE")

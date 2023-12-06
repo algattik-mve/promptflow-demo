@@ -2,3 +2,4 @@ promptflow[azure]
 promptflow-tools
 langchain
 ragas
+python-dotenv
