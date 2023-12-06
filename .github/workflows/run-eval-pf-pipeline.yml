@@ -24,7 +24,7 @@ env:
   OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
   AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }}
-  AISEARCH_INDEX: ${{ github.event.inputs.search_index || ${{ vars.AISEARCH_INDEX }} || 'patents' }} 
+  AISEARCH_INDEX: ${{ github.event.inputs.search_index }} || ${{ vars.AISEARCH_INDEX }} || 'patents' }} 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
