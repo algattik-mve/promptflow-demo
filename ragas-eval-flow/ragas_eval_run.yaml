@@ -1,0 +1,10 @@
+# name: ragas-eval-flow_default_20231203_222929_681000
+display_name: ragas_eval_${timestamp}_on_run_${run} # supported macros: ${variant_id},${timestamp},${run}
+flow: .
+data: ../data/data.jsonl
+# run: chat-with-patents_default_20231203_222503_903000
+column_mapping:
+  question: ${run.inputs.question}
+  answer: ${run.outputs.output}
+  context: ${run.outputs.context}
+  ground_truth: ${data.groundtruth}

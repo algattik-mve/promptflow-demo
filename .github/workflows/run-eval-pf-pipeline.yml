@@ -15,8 +15,8 @@ permissions:
       contents: read
 
 env: 
-  OPENAI_KEY: ${{ secrets.OPENAI_KEY }} 
-  OPENAI_ENDPOINT: ${{ vars.OPENAI_ENDPOINT }}
+  OPENAI_API_KEY: ${{ secrets.OPENAI_KEY }} 
+  OPENAI_API_BASE: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
   AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }} 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
@@ -24,6 +24,13 @@ env:
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  # The following variables are used in the ragas-evaluation-flow
+  OPENAI_API_TYPE: "azure"
+  OPENAI_API_VERSION: "2023-05-15"
+  CHAT_MODEL: "gpt-35-turbo"
+  CHAT_DEPLOYMENT: "gpt-35-turbo"
+  EMBEDDING_MODEL: "text-embedding-ada-002"
+  EMBEDDING_DEPLOYMENT: "text-embedding-ada-002"
 
 jobs:
   run-promptflow:
@@ -38,8 +45,8 @@ jobs:
       run: |
         set -u
         for i in \
-          OPENAI_KEY \
-          OPENAI_ENDPOINT \
+          OPENAI_API_KEY \
+          OPENAI_API_BASE \
           AISEARCH_KEY \
           AISEARCH_ENDPOINT \
           AZURE_RESOURCE_GROUP \
@@ -59,19 +66,28 @@ jobs:
       run: pip install keyrings.alt
     - name: Configure promptflow connections
       run: |
-        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_KEY }} api_base=${{ env.OPENAI_ENDPOINT }}
+        pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_API_KEY }} api_base=${{ env.OPENAI_API_BASE }}
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
       run: pf flow test --flow .
     - name: Run promptflow batch
       run: pf run create --file batch_run.yaml --name batch_run
     - name: Run promptflow evaluation
-      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run
+    - name: Show evaluation metrics
+      run: pf run show-metrics --name evaluation_run
+    - name: Install Ragas python dependencies
+      run: pip install -r ../ragas-eval-flow/requirements.txt
+    - name: Run Ragas evaluation
+      run: pf run create --file ../ragas-eval-flow/ragas_eval_run.yaml --run batch_run --name ragas_evaluation_run
+    - name: Show Ragas evaluation metrics
+      run: pf run show-metrics --name ragas_evaluation_run
     - name: Visualize promptflow runs
       # When run non-interactively, this produces an HTML file in /tmp
       run: |
         pf run visualize --name batch_run 
         pf run visualize --name evaluation_run 
+        pf run visualize --name ragas_evaluation_run 
     - name: Archive promptflow run visualizations
       uses: actions/upload-artifact@v3
       with:
