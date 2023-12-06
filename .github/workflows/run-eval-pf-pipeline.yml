@@ -29,7 +29,7 @@ env:
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-  SEARCH_INDEX: ${{ github.event.inputs.search_index || 'patents' }}  # use the input as an environment variable or a default value
+  SEARCH_INDEX: ${{ github.event.inputs.search_index || 'patents' }}  # for runs triggered by PR or merge, use default value
 
 jobs:
   run-promptflow:
