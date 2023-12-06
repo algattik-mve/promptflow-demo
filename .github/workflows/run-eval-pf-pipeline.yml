@@ -25,12 +25,12 @@ env:
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
   # The following variables are used in the ragas-evaluation-flow
-  OPENAI_API_TYPE: ${{ vars.OPENAI_API_TYPE }}
-  OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION }}
-  CHAT_MODEL: ${{ vars.CHAT_MODEL }}
-  CHAT_DEPLOYMENT: ${{ vars.CHAT_DEPLOYMENT }}
-  EMBEDDING_MODEL: ${{ vars.EMBEDDING_MODEL }}
-  EMBEDDING_DEPLOYMENT: ${{ vars.EMBEDDING_DEPLOYMENT }}
+  OPENAI_API_TYPE: "azure"
+  OPENAI_API_VERSION: "2023-05-15"
+  CHAT_MODEL: "gpt-35-turbo"
+  CHAT_DEPLOYMENT: "gpt-35-turbo"
+  EMBEDDING_MODEL: "text-embedding-ada-002"
+  EMBEDDING_DEPLOYMENT: "text-embedding-ada-002"
 
 jobs:
   run-promptflow:
