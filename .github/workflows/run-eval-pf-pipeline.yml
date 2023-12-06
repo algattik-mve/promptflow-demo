@@ -71,9 +71,9 @@ jobs:
     - name: Test promptflow run
       run: pf flow test --flow . --inputs search_index="${{ env.AISEARCH_INDEX }}"
     - name: Run promptflow batch
-      run: pf run create --file batch_run.yaml --name batch_run
+      run: pf run create --file batch_run.yaml --name batch_run --column-mapping search_index="${{ env.AISEARCH_INDEX }}" question='${data.question}'
     - name: Run promptflow evaluation
-      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run --column-mapping search_index="${{ env.AISEARCH_INDEX }}" question='${data.question}'
     - name: Visualize promptflow runs
       # When run non-interactively, this produces an HTML file in /tmp
       run: |
