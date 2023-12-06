@@ -76,6 +76,8 @@ jobs:
       run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run
     - name: Show evaluation metrics
       run: pf run show-metrics --name evaluation_run
+    - name: Install Ragas python dependencies
+      run: pip install -r ../ragas-eval-flow/requirements.txt
     - name: Run Ragas evaluation
       run: pf run create --file ../ragas-eval-flow/ragas_eval_run.yaml --run batch_run --name ragas_evaluation_run
     - name: Show Ragas evaluation metrics
