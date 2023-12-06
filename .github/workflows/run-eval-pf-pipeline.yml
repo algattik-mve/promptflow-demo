@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       search_index:
-        description: 'Search index to be used'     # description of the input
+        description: 'Search index to be used' # description of the input
         required: true
-        default: 'patents'                          # default value if not specified
+        default: 'patents' # default value if not specified
   push:
     branches:
       - main
@@ -29,6 +29,7 @@ env:
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  SEARCH_INDEX: ${{ github.event.inputs.search_index || 'patents' }}  # use the input as an environment variable or a default value
 
 jobs:
   run-promptflow:
@@ -67,7 +68,7 @@ jobs:
         pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_KEY }} api_base=${{ env.OPENAI_ENDPOINT }}
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
-      run: pf flow test --flow . --inputs search_index="${{ github.event.inputs.search_index }}"
+      run: pf flow test --flow . --inputs search_index="${{ env.SEARCH_INDEX }}"
     - name: Run promptflow batch
       run: pf run create --file batch_run.yaml --name batch_run
     - name: Run promptflow evaluation
