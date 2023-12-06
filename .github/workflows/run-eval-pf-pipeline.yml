@@ -71,7 +71,7 @@ jobs:
     - name: Test promptflow run
       run: pf flow test --flow . --inputs search_index="${{ env.AISEARCH_INDEX }}"
     - name: Run promptflow batch
-      run: pf run create --file batch_run.yaml --name batch_run --inputs search_index="${{ env.AISEARCH_INDEX }}"
+      run: pf run create --file batch_run.yaml --name batch_run
     - name: Run promptflow evaluation
       run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
     - name: Visualize promptflow runs
