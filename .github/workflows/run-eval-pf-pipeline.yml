@@ -48,6 +48,7 @@ jobs:
           OPENAI_ENDPOINT \
           AISEARCH_KEY \
           AISEARCH_ENDPOINT \
+          AISEARCH_INDEX \
           AZURE_RESOURCE_GROUP \
           AZURE_ML_WORKSPACE \
           AZURE_CLIENT_ID \
