@@ -29,20 +29,20 @@ Deploy the following Azure Resources
 
 ### Secrets
 
-| Secret name      | Value                                                     | Example |
-| ---------------- | --------------------------------------------------------- | ------- |
-| `AISEARCH_KEY`   | The access key for your deployed Azure AI Search instance |         |
-| `OPENAI_API_KEY` | The access key for your deployed Azure OpenAI instance    |         |
+| Secret name    | Value                                                     | Example |
+| -------------- | --------------------------------------------------------- | ------- |
+| `AISEARCH_KEY` | The access key for your deployed Azure AI Search instance |         |
+| `OPENAI_KEY`   | The access key for your deployed Azure OpenAI instance    |         |
 
 ### Variables
 
-| Variable name           | Value                                                                | Example                                |
-| ----------------------- | -------------------------------------------------------------------- | -------------------------------------- |
-| `AISEARCH_ENDPOINT`     | The endpoint for your deployed Azure AI Search instance              | `https://mve.search.windows.net`       |
-| `AZURE_CLIENT_ID`       | The client ID of the application                                     | `27b4fd5c-ab61-4f78-8338-5706f03d9073` |
-| `AZURE_SUBSCRIPTION_ID` | The subscription ID of Azure resources                               | `c3055f19-326c-4ff3-a9f7-4531fd14f73e` |
-| `AZURE_TENANT_ID`       | The tenant ID of Azure resources                                     | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
-| `OPENAI_API_BASE`       | The endpoint for your deployed Azure OpenAI instance                 | `https://mve.openai.azure.com`         |
+| Variable name           | Value                                                   | Example                                |
+| ----------------------- | ------------------------------------------------------- | -------------------------------------- |
+| `AISEARCH_ENDPOINT`     | The endpoint for your deployed Azure AI Search instance | `https://mve.search.windows.net`       |
+| `AZURE_CLIENT_ID`       | The client ID of the application                        | `27b4fd5c-ab61-4f78-8338-5706f03d9073` |
+| `AZURE_SUBSCRIPTION_ID` | The subscription ID of Azure resources                  | `c3055f19-326c-4ff3-a9f7-4531fd14f73e` |
+| `AZURE_TENANT_ID`       | The tenant ID of Azure resources                        | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
+| `OPENAI_ENDPOINT`       | The endpoint for your deployed Azure OpenAI instance    | `https://mve.openai.azure.com`         |
 
 **Hint**: You can create variables in batch from an `.env` file by running the following [GitHub CLI
 command](https://cli.github.com/manual/gh_variable_set) in context of the repository:
