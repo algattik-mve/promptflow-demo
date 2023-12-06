@@ -36,13 +36,27 @@ Deploy the following Azure Resources
 
 ### Variables
 
-| Variable name           | Value                                                   | Example                                |
-| ----------------------- | ------------------------------------------------------- | -------------------------------------- |
-| `AISEARCH_ENDPOINT`     | The endpoint for your deployed Azure AI Search instance | `https://mve.search.windows.net`       |
-| `AZURE_CLIENT_ID`       | The client ID of the application                        | `27b4fd5c-ab61-4f78-8338-5706f03d9073` |
-| `AZURE_SUBSCRIPTION_ID` | The subscription ID of Azure resources                  | `c3055f19-326c-4ff3-a9f7-4531fd14f73e` |
-| `AZURE_TENANT_ID`       | The tenant ID of Azure resources                        | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
-| `OPENAI_API_BASE`       | The endpoint for your deployed Azure OpenAI instance    | `https://mve.openai.azure.com`         |
+| Variable name           | Value                                                                | Example                                |
+| ----------------------- | -------------------------------------------------------------------- | -------------------------------------- |
+| `AISEARCH_ENDPOINT`     | The endpoint for your deployed Azure AI Search instance              | `https://mve.search.windows.net`       |
+| `AZURE_CLIENT_ID`       | The client ID of the application                                     | `27b4fd5c-ab61-4f78-8338-5706f03d9073` |
+| `AZURE_SUBSCRIPTION_ID` | The subscription ID of Azure resources                               | `c3055f19-326c-4ff3-a9f7-4531fd14f73e` |
+| `AZURE_TENANT_ID`       | The tenant ID of Azure resources                                     | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
+| `OPENAI_API_BASE`       | The endpoint for your deployed Azure OpenAI instance                 | `https://mve.openai.azure.com`         |
+| `OPENAI_API_TYPE`       | The API type of the OpenAI service                                   | `azure`                                |
+| `OPENAI_API_VERSION`    | The OpenAI API version                                               | `2023-05-15`                           |
+| `CHAT_MODEL`            | The name of the *chat model* in your OpenAI service                  | `gpt-35-turbo`                         |
+| `CHAT_DEPLOYMENT`       | The name of the *chat model deployment* in your OpenAI service       | `gpt-35-turbo`                         |
+| `EMBEDDING_MODEL`       | The name of the *embeddings model* in your OpenAI service            | `text-embedding-ada-002`               |
+| `EMBEDDING_DEPLOYMENT`  | The name of the *embeddings model deployment* in your OpenAI service | `text-embedding-ada-002`               |
+
+**Hint**: You can create variables in batch from an `.env` file by running the following [GitHub CLI
+command](https://cli.github.com/manual/gh_variable_set) in context of the repository:
+
+```bash
+gh variable set -f .env
+```
+
 
 ## Create connections in Azure ML
 

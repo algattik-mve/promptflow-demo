@@ -24,6 +24,13 @@ env:
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+  # The following variables are used in the ragas-evaluation-flow
+  OPENAI_API_TYPE: ${{ vars.OPENAI_API_TYPE }}
+  OPENAI_API_VERSION: ${{ vars.OPENAI_API_VERSION }}
+  CHAT_MODEL: ${{ vars.CHAT_MODEL }}
+  CHAT_DEPLOYMENT: ${{ vars.CHAT_DEPLOYMENT }}
+  EMBEDDING_MODEL: ${{ vars.EMBEDDING_MODEL }}
+  EMBEDDING_DEPLOYMENT: ${{ vars.EMBEDDING_DEPLOYMENT }}
 
 jobs:
   run-promptflow:
@@ -66,12 +73,19 @@ jobs:
     - name: Run promptflow batch
       run: pf run create --file batch_run.yaml --name batch_run
     - name: Run promptflow evaluation
-      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run 
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run
+    - name: Show evaluation metrics
+      run: pf run show-metrics --name evaluation_run
+    - name: Run Ragas evaluation
+      run: pf run create --file ../ragas-eval-flow/ragas_eval_run.yaml --run batch_run --name ragas_evaluation_run
+    - name: Show Ragas evaluation metrics
+      run: pf run show-metrics --name ragas_evaluation_run
     - name: Visualize promptflow runs
       # When run non-interactively, this produces an HTML file in /tmp
       run: |
         pf run visualize --name batch_run 
         pf run visualize --name evaluation_run 
+        pf run visualize --name ragas_evaluation_run 
     - name: Archive promptflow run visualizations
       uses: actions/upload-artifact@v3
       with:
