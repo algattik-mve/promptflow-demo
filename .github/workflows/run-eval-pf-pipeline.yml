@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
     inputs:
       search_index:
-        description: 'Search index to be used' # description of the input
+        description: 'Search index to be used'
         required: true
-        default: 'patents' # default value if not specified
+        default: 'patents'
   push:
     branches:
       - main
@@ -44,7 +44,7 @@ jobs:
     defaults:
       run:
         working-directory: chat-with-patents
-    steps:  
+    steps:
     - name: Check out repo
       uses: actions/checkout@v2
     - name: "check settings"
