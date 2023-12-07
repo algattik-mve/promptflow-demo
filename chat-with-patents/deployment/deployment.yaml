@@ -1,8 +1,7 @@
 $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
-endpoint_name: chat-with-patents-7272ff
-model: azureml:chat-with-patents:1
-  # You can also specify model files path inline
-  # path: examples/flows/chat/basic-chat
+name: chat-with-patents # overridden at deployment time
+endpoint_name: chat-with-patents-7272ff # overridden at deployment time
+model: azureml:chat-with-patents:1 # overridden at deployment time
 environment: 
   image: mcr.microsoft.com/azureml/promptflow/promptflow-runtime:latest
   # inference config is used to build a serving container for online deployments
