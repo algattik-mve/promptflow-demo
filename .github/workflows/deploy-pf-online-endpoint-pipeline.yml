@@ -15,8 +15,9 @@ permissions:
 env: 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
-  ENDPOINT_NAME: chat-with-patents5
-  ENDPOINT_IDENTITY_ARM_ID: /subscriptions/c3055f19-326c-4ff3-a9f7-4531fd14f73e/resourceGroups/algattik-ai-exploration/providers/Microsoft.ManagedIdentity/userAssignedIdentities/algattiktest
+  ENDPOINT_NAME: chat-with-patents
+  DEPLOYMENT_NAME: blue
+  ENDPOINT_IDENTITY_ARM_ID: ${{ vars.ENDPOINT_IDENTITY_ARM_ID }}
 
 concurrency:
   group: ${{ github.workflow }} # avoid concurrent runs
@@ -47,18 +48,28 @@ jobs:
         az ml online-endpoint update $args
       env:
         # https://learn.microsoft.com/en-us/azure/machine-learning/how-to-access-resources-from-endpoints-managed-identities?view=azureml-api-2&tabs=user-identity-cli#create-an-online-endpoint
-        args: --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}} --set identity.user_assigned_identities[0].resource_id=${{env.ENDPOINT_IDENTITY_ARM_ID}}
-
+        args: >-
+          --file deployment/endpoint.yaml
+          --name ${{env.ENDPOINT_NAME}}
+          --set identity.user_assigned_identities[0].resource_id=${{env.ENDPOINT_IDENTITY_ARM_ID}}
     - name: Get deployment name
-      run: echo "DEPLOYMENT_NAME=$(yq -r .name deployment/deployment.yaml)" >> "$GITHUB_ENV"
-    - name: Update deployment PRT_CONFIG variable
+      run: echo "ENDPOINT_IDENTITY_CLIENT_ID=$(az resource show --id ${{vars.ENDPOINT_IDENTITY_ARM_ID}} --query properties.clientId -o tsv)" >> "$GITHUB_ENV"
+    - name: Configure deployment
       run: |
-        PRT_CONFIG_OVERRIDE=deployment.subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID }},deployment.resource_group=${{ env.AZURE_RESOURCE_GROUP }},deployment.workspace_name=${{ env.AZURE_ML_WORKSPACE }},deployment.endpoint_name=${{ env.ENDPOINT_NAME }},deployment.deployment_name=${{ env.DEPLOYMENT_NAME }}
-        sed -i "s/PRT_CONFIG_OVERRIDE:.*/PRT_CONFIG_OVERRIDE: $PRT_CONFIG_OVERRIDE/g" deployment/deployment.yaml
+        yq -i e '.environment_variables.PRT_CONFIG_OVERRIDE="${{env.PRT_CONFIG_OVERRIDE}}"' deployment/deployment.yaml
+        yq -i e '.environment_variables.AZURE_CLIENT_ID="${{env.ENDPOINT_IDENTITY_CLIENT_ID}}"' deployment/deployment.yaml
+        cat deployment/deployment.yaml
+      env:
+        PRT_CONFIG_OVERRIDE: "deployment.subscription_id=${{ vars.AZURE_SUBSCRIPTION_ID }},deployment.resource_group=${{ env.AZURE_RESOURCE_GROUP }},deployment.workspace_name=${{ env.AZURE_ML_WORKSPACE }},deployment.endpoint_name=${{ env.ENDPOINT_NAME }},deployment.deployment_name=${{ env.DEPLOYMENT_NAME }}"
     - name: Setup deployment
       run: |
-        az ml online-deployment create --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}} || \
-        az ml online-deployment update --file deployment/deployment.yaml --endpoint-name ${{env.ENDPOINT_NAME}}
+        az ml online-deployment create $args || \
+        az ml online-deployment update $args
+      env:
+        args: >-
+          --name ${{env.DEPLOYMENT_NAME}}
+          --file deployment/deployment.yaml
+          --endpoint-name ${{env.ENDPOINT_NAME}}
     - name: Updating endpoint traffic
       run: az ml online-endpoint update -n ${{env.ENDPOINT_NAME}} --traffic "${{env.DEPLOYMENT_NAME}}=100"
     - name: Check the status of the endpoint

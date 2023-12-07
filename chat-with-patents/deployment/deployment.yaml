@@ -1,5 +1,4 @@
 $schema: https://azuremlschemas.azureedge.net/latest/managedOnlineDeployment.schema.json
-name: blue
 endpoint_name: chat-with-patents-7272ff
 model: azureml:chat-with-patents:1
   # You can also specify model files path inline
@@ -31,3 +30,6 @@ environment_variables:
   # For example, if there are 2 flow outputs: "answer", "context", and I only want to have "answer" in the endpoint response, I can set this env variable to '["answer"]'.
   # If you don't set this environment, by default all flow outputs will be included in the endpoint response.
   # PROMPTFLOW_RESPONSE_INCLUDED_FIELDS: '["category", "evidence"]'
+
+  # Managed identity used to access Azure resources
+  AZURE_CLIENT_ID: <client-id>

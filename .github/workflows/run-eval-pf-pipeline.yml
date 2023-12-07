@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - algattik/tmp
   pull_request:
     branches:
       - main
