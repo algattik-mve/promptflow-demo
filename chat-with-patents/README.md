@@ -116,6 +116,5 @@ pf flow test --flow . --inputs search_index="patents-500-100-384-100-100"
 ```
 
 Additionally, the parameter `search_index` can be specified for the CI/CD pipeline. The value can be provided when the
-pipeline is triggered manually. For automatic triggers, the pipeline will use the value of the variable `AISEARCH_INDEX`,
-or the value `patents` if the variable is not set.
-
+pipeline is triggered manually. For automatic triggers, the pipeline will use the default value `patents`, which can be
+changed per branch if needed.
