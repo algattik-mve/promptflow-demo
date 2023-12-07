@@ -15,7 +15,8 @@ permissions:
 env: 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
-  ENDPOINT_NAME: chat-with-patents
+  ENDPOINT_NAME: chat-with-patents5
+  ENDPOINT_IDENTITY_ARM_ID: /subscriptions/c3055f19-326c-4ff3-a9f7-4531fd14f73e/resourceGroups/algattik-ai-exploration/providers/Microsoft.ManagedIdentity/userAssignedIdentities/algattiktest
 
 concurrency:
   group: ${{ github.workflow }} # avoid concurrent runs
@@ -42,8 +43,12 @@ jobs:
       run: az configure --defaults group=${{env.AZURE_RESOURCE_GROUP}} workspace=${{env.AZURE_ML_WORKSPACE}}
     - name: Setup endpoint
       run: |
-        az ml online-endpoint create --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}} || \
-        az ml online-endpoint update --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}}
+        az ml online-endpoint create $args || \
+        az ml online-endpoint update $args
+      env:
+        # https://learn.microsoft.com/en-us/azure/machine-learning/how-to-access-resources-from-endpoints-managed-identities?view=azureml-api-2&tabs=user-identity-cli#create-an-online-endpoint
+        args: --file deployment/endpoint.yaml --name ${{env.ENDPOINT_NAME}} --set identity.user_assigned_identities[0].resource_id=${{env.ENDPOINT_IDENTITY_ARM_ID}}
+
     - name: Get deployment name
       run: echo "DEPLOYMENT_NAME=$(yq -r .name deployment/deployment.yaml)" >> "$GITHUB_ENV"
     - name: Update deployment PRT_CONFIG variable
