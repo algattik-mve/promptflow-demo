@@ -18,7 +18,7 @@ permissions:
 env: 
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
-  ENDPOINT_NAME: chat-with-patents
+  ENDPOINT_NAME: chat-with-patents10
 
 concurrency:
   group: ${{ github.workflow }} # avoid concurrent runs
