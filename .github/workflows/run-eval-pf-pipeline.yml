@@ -24,13 +24,6 @@ env:
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
   AZURE_TENANT_ID: ${{ vars.AZURE_TENANT_ID }}
   AZURE_SUBSCRIPTION_ID: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-  # The following variables are used in the ragas-evaluation-flow
-  OPENAI_API_TYPE: "azure"
-  OPENAI_API_VERSION: "2023-05-15"
-  CHAT_MODEL: "gpt-35-turbo"
-  CHAT_DEPLOYMENT: "gpt-35-turbo"
-  EMBEDDING_MODEL: "text-embedding-ada-002"
-  EMBEDDING_DEPLOYMENT: "text-embedding-ada-002"
 
 jobs:
   run-promptflow:
@@ -80,6 +73,13 @@ jobs:
       run: pip install -r ../ragas-eval-flow/requirements.txt
     - name: Run Ragas evaluation
       run: pf run create --file ../ragas-eval-flow/ragas_eval_run.yaml --run batch_run --name ragas_evaluation_run
+      env:
+        OPENAI_API_TYPE: "azure"
+        OPENAI_API_VERSION: "2023-05-15"
+        CHAT_MODEL: "gpt-35-turbo"
+        CHAT_DEPLOYMENT: "gpt-35-turbo"
+        EMBEDDING_MODEL: "text-embedding-ada-002"
+        EMBEDDING_DEPLOYMENT: "text-embedding-ada-002"
     - name: Show Ragas evaluation metrics
       run: pf run show-metrics --name ragas_evaluation_run
     - name: Visualize promptflow runs
