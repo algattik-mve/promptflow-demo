@@ -7,9 +7,9 @@ Deploy the following Azure Resources
 - Azure OpenAI
 - Azure AI Search
 - Azure ML Workspace
-- Two Azure [User-Assigned Managed Identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities) for CD
-  - One for CD
-  - One for the online endpoint
+- Two Azure [User-Assigned Managed Identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities):
+  - One for CD (the identity of the GitHub Actions runner deploying model and endpoint)
+  - One for the online endpoint (the identity of the REST endpoint, downloading model assets and connection secrets from Azure ML)
 
 
 ## Configure application federated credentials
