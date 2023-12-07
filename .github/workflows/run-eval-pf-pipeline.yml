@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - main
+      - feature/pipeline-cleanup
   pull_request:
     branches:
       - main
