@@ -3,6 +3,11 @@ name: Test Prompts with Promptflow
 
 on:
   workflow_dispatch:
+    inputs:
+      search_index:
+        description: 'Search index to be used'
+        required: true
+        default: 'patents'
   push:
     branches:
       - main
@@ -18,7 +23,8 @@ env:
   OPENAI_API_KEY: ${{ secrets.OPENAI_KEY }} 
   OPENAI_API_BASE: ${{ vars.OPENAI_ENDPOINT }}
   AISEARCH_KEY: ${{ secrets.AISEARCH_KEY }} 
-  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }} 
+  AISEARCH_ENDPOINT: ${{ vars.AISEARCH_ENDPOINT }}
+  AISEARCH_INDEX: ${{ github.event.inputs.search_index || 'patents' }}
   AZURE_RESOURCE_GROUP: ${{ vars.AZURE_RESOURCE_GROUP }}
   AZURE_ML_WORKSPACE: ${{ vars.AZURE_ML_WORKSPACE }}
   AZURE_CLIENT_ID: ${{ vars.AZURE_CLIENT_ID }}
@@ -49,6 +55,7 @@ jobs:
           OPENAI_API_BASE \
           AISEARCH_KEY \
           AISEARCH_ENDPOINT \
+          AISEARCH_INDEX \
           AZURE_RESOURCE_GROUP \
           AZURE_ML_WORKSPACE \
           AZURE_CLIENT_ID \
@@ -69,11 +76,11 @@ jobs:
         pf connection create --file ../connections/azure_openai.yaml --name open_ai_connection --set api_key=${{ env.OPENAI_API_KEY }} api_base=${{ env.OPENAI_API_BASE }}
         pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=${{ env.AISEARCH_KEY }} api_base=${{ env.AISEARCH_ENDPOINT }}
     - name: Test promptflow run
-      run: pf flow test --flow .
+      run: pf flow test --flow . --inputs search_index="${{ env.AISEARCH_INDEX }}"
     - name: Run promptflow batch
-      run: pf run create --file batch_run.yaml --name batch_run
+      run: pf run create --file batch_run.yaml --name batch_run --column-mapping search_index="${{ env.AISEARCH_INDEX }}" question='${data.question}'
     - name: Run promptflow evaluation
-      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run
+      run: pf run create --file ../rag-evaluation-flow/evaluation_run.yaml --run batch_run --name evaluation_run --column-mapping search_index="${{ env.AISEARCH_INDEX }}" question='${data.question}'
     - name: Show evaluation metrics
       run: pf run show-metrics --name evaluation_run
     - name: Install Ragas python dependencies
@@ -82,6 +89,7 @@ jobs:
       run: pf run create --file ../ragas-eval-flow/ragas_eval_run.yaml --run batch_run --name ragas_evaluation_run
     - name: Show Ragas evaluation metrics
       run: pf run show-metrics --name ragas_evaluation_run
+
     - name: Visualize promptflow runs
       # When run non-interactively, this produces an HTML file in /tmp
       run: |

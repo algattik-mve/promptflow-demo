@@ -73,7 +73,7 @@ fi
 if pf connection list | grep ai_search_connection; then
     echo "ai_search_connection already exists"
 else
-    pf connection create --file ../connections/azure_ai_search.yml --name ai_search_connection --set api_key=<your_api_key> api_base=https://<your ai search name>.search.windows.net
+    pf connection create --file ../connections/azure_ai_search.yaml --name ai_search_connection --set api_key=<your_api_key> api_base=https://<your ai search name>.search.windows.net
 fi
 ```
 
