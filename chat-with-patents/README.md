@@ -91,11 +91,9 @@ pf flow test --flow . --inputs question="How does the car know how much fuel is 
 
 ## Indexing documents
 
-To create an index of the documents, we leverage the [RAG Experiment
-Accelerator](https://github.com/microsoft/rag-experiment-accelerator).
+To create an index of the documents, we leverage the RAG Experiment Accelerator.
 This provides a simple way to create different sets of indexes in Azure AI Search, by specifying the parameters in the
-configuration file. Refer to the
-[documentation](https://github.com/microsoft/rag-experiment-accelerator?tab=readme-ov-file#how-to-use) to get started.
+configuration file.
 
 After running the indexing script, you should see indexes created in your Azure AI Search resource, with the following
 naming pattern: `{NAME_PREFIX}-{chunk_size}-{overlap}-{dimension}-{ef_construction}-{ef_search}`, where:
