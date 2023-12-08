@@ -1,11 +1,16 @@
 # Continuous Integration/Delivery
 
-## Create an application for CD
+## Deploy Azure resources
 
-[Create a Microsoft Entra application and service principal](
-https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#use-the-azure-login-action-with-openid-connect).
+Deploy the following Azure Resources
 
-You can also create the application as an Azure [User-Assigned Managed Identity](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities?pivots=identity-mi-methods-azp.)
+- Azure OpenAI
+- Azure AI Search
+- Azure ML Workspace
+- Two Azure [User-Assigned Managed Identities](https://learn.microsoft.com/en-us/entra/identity/managed-identities-azure-resources/how-manage-user-assigned-managed-identities):
+  - One for CD (the identity of the GitHub Actions runner deploying model and endpoint)
+  - One for the online endpoint (the identity of the REST endpoint, downloading model assets and connection secrets from Azure ML)
+
 
 ## Configure application federated credentials
 
@@ -16,14 +21,6 @@ Create two Federated credentials for your Organization and Repository:
 
 - One with Entity `Branch` and Branch `main`.
 - One with Entity `Pull request`.
-
-## Deploy Azure resources
-
-Deploy the following Azure Resources
-
-- Azure OpenAI
-- Azure AI Search
-- Azure ML Workspace
 
 ## Configure repository action settings
 
@@ -36,14 +33,15 @@ Deploy the following Azure Resources
 
 ### Variables
 
-| Variable name           | Value                                                   | Example                                |
-| ----------------------- | ------------------------------------------------------- | -------------------------------------- |
-| `AISEARCH_ENDPOINT`     | The endpoint for your deployed Azure AI Search instance | `https://mve.search.windows.net`       |
-| `AISEARCH_INDEX`        | The index of the Azure AI Search instance to be used    | `patents`                              |
-| `AZURE_CLIENT_ID`       | The client ID of the application                        | `27b4fd5c-ab61-4f78-8338-5706f03d9073` |
-| `AZURE_SUBSCRIPTION_ID` | The subscription ID of Azure resources                  | `c3055f19-326c-4ff3-a9f7-4531fd14f73e` |
-| `AZURE_TENANT_ID`       | The tenant ID of Azure resources                        | `2ac1091e-2d47-4212-9453-0ca0db6c21d7` |
-| `OPENAI_ENDPOINT`       | The endpoint for your deployed Azure OpenAI instance    | `https://mve.openai.azure.com`         |
+| Variable name              | Value                                                        | Example                                                      |
+| -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
+| `AISEARCH_ENDPOINT`        | The endpoint for your deployed Azure AI Search instance      | `https://mve.search.windows.net`                             |
+| `AZURE_CLIENT_ID`          | The client ID of the managed identity created for CD         | `9b7af88e-e726-48ce-a44d-9dc8c947fc4b`                       |
+| `AZURE_RESOURCE_GROUP`     | The resource group of the Azure ML workspace                 | `promptflow-demo`                                            |
+| `AZURE_SUBSCRIPTION_ID`    | The subscription ID of Azure resources                       | `c3055f19-326c-4ff3-a9f7-4531fd14f73e`                       |
+| `AZURE_TENANT_ID`          | The tenant ID of Azure resources                             | `2ac1091e-2d47-4212-9453-0ca0db6c21d7`                       |
+| `ENDPOINT_IDENTITY_ARM_ID` | The Azure Resource Manager Resource ID of the managed identity created for the online endpoint | `/subscriptions/c3055f19-326c-4ff3-a9f7-4531fd14f73e/resourceGroups/algattik-ai-exploration/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mve-uami-endpoint` |
+| `OPENAI_ENDPOINT`          | The endpoint for your deployed Azure OpenAI instance         | `https://mve.openai.azure.com`                               |
 
 **Hint**: You can create variables in batch from an `.env` file by running the following [GitHub CLI
 command](https://cli.github.com/manual/gh_variable_set) in context of the repository:
@@ -64,28 +62,45 @@ In Azure ML Studio, under `Prompt flow`, in the `Connections` tab, create the fo
 
 The connections are used by the Azure ML endpoint deployed by the pipeline.
 
-## Grant Azure resource access
+## Grant Azure role assignments
 
-Grant the following RBAC role to allow the pipeline to deploy models:
+### Model deployment
 
-- Identity: the application you created for CD
+Grant the following IAM role assignments to allow the pipeline to deploy models:
+
 - Resource: your Azure ML workspace
 - Role: [`AzureML Data Scientist`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#azureml-data-scientist)
+- Identity: the managed identity you created for CD
 
-## Grant Endpoint permissions resource access
+### Managed identity assignment
 
-After the CI/CD pipeline has run a first time, the endpoint will be created, but is missing the permissions to retrieve secrets to authenticate to Azure OpenAI and Azure AI Search.
+Grant the following IAM role assignments to allow  the pipeline to assign the managed identity to the deployed online endpoint:
 
-The pipeline contains a step to invoke the model, which will then fail with an error similar to:
+- Resource: the managed identity you created for the online endpoint
+- Role: [`Managed Identity Operator`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-operator)
+- Identity: the managed identity you created for CD
 
-```text
-Access denied to list workspace secret due to invalid authentication. Please assign RBAC role 'Azure Machine Learning Workspace Connection Secrets Reader' to the endpoint for current workspace, and wait for a few minutes to make sure the new role takes effect. More details can be found in https://aka.ms/pf-deploy-identity.
-```
+### Deployment workspace resources
 
-Grant the following RBAC role to [allow the endpoint to retrieve secrets](https://aka.ms/pf-deploy-identity):
+Grant the following IAM role assignments to [allow the endpoint deployment to deploy the container image and artifacts from the workspace](https://learn.microsoft.com/en-us/azure/machine-learning/how-to-troubleshoot-online-endpoints?view=azureml-api-2&tabs=cli#authorization-error).
 
-- Identity:  `Managed identity` -> ` Machine Learning online endpoint` -> `chat-with-patents`
+First role assignment:
+
+- Resource: the storage account for the Azure ML workspace
+- Role: [`Storage blob data reader`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#storage-blob-data-reader)
+- Identity: the managed identity you created for the endpoint
+
+Second role assignment:
+
+- Resource: the Azure Container Registry (ACR) for the Azure ML workspace
+- Role: [`AcrPull`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#acrpull)
+- Identity: the managed identity you created for the endpoint
+
+### Endpoint workspace secrets
+
+Grant the following IAM role assignments to [allow the endpoint to retrieve secrets](https://aka.ms/pf-deploy-identity):
+
 - Resource: your Azure ML workspace
 - Role: `Azure Machine Learning Workspace Connection Secrets Reader`
+- Identity: the managed identity you created for the endpoint
 
-After that, rerun the pipeline.
