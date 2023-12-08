@@ -77,7 +77,6 @@ Grant the following IAM role assignments to allow the pipeline to deploy models:
 Grant the following IAM role assignments to allow  the pipeline to assign the managed identity to the deployed online endpoint:
 
 - Resource: the managed identity you created for the online endpoint
-
 - Role: [`Managed Identity Operator`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-operator)
 - Identity: the managed identity you created for CD
 
@@ -94,7 +93,6 @@ First role assignment:
 Second role assignment:
 
 - Resource: the Azure Container Registry (ACR) for the Azure ML workspace
-
 - Role: [`AcrPull`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#acrpull)
 - Identity: the managed identity you created for the endpoint
 
@@ -103,7 +101,6 @@ Second role assignment:
 Grant the following IAM role assignments to [allow the endpoint to retrieve secrets](https://aka.ms/pf-deploy-identity):
 
 - Resource: your Azure ML workspace
-
 - Role: `Azure Machine Learning Workspace Connection Secrets Reader`
 - Identity: the managed identity you created for the endpoint
 
