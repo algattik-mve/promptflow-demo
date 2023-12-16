@@ -1,4 +1,4 @@
-name: Login to Azure
+name: Configure Azure CLI
 description: >
   When run in GitHub Actions, login to Azure using environment variables for a Client ID.
   When run in act (local actions runner), install Azure CLI. CLI will be logged in if

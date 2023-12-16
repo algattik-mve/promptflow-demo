@@ -36,7 +36,6 @@ Copy the file `.variables.example` to `.variables` and fill:
 | `ENDPOINT_IDENTITY_ARM_ID` | The Azure Resource Manager Resource ID of the managed identity created for the online endpoint | `/subscriptions/c3055f19-326c-4ff3-a9f7-4531fd14f73e/resourceGroups/algattik-ai-exploration/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mve-uami-endpoint` |
 | `OPENAI_ENDPOINT`          | The endpoint for your deployed Azure OpenAI instance         | `https://mve.openai.azure.com`                               |
 
-
 ## Create connections in Azure ML
 
 In Azure ML Studio, under `Prompt flow`, in the `Connections` tab, create the following connections:
@@ -78,12 +77,11 @@ Grant the following IAM role assignments to [allow the endpoint to retrieve secr
 
 [Install Docker and act](https://github.com/nektos/act#installation).
 
-```
+```bash
 ./local-workflow.sh [act-parameters]
 ```
 
 The default command without parameters will run all workflows. The script accepts parameters hat are passed to the `act` command (see `act --help` for reference), for example:
 
-* `--workflows .github/workflows/run-eval-pf-pipeline.yml`: run only the specified workflow
-* ``--verbose`: verbose output
-
+- `--workflows .github/workflows/run-eval-pf-pipeline.yml`: run only the specified workflow
+- ``--verbose`: verbose output

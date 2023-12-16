@@ -15,13 +15,12 @@ Deploy the following Azure Resources
   - One for CD (the identity of the GitHub Actions runner deploying model and endpoint)
   - One for the online endpoint (the identity of the REST endpoint, downloading model assets and connection secrets from Azure ML)
 
-
 ## Configure application federated credentials
 
 Follow the instructions to [
 use the Azure login action with OpenID Connect](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#use-the-azure-login-action-with-openid-connect).
 
-Create two Federated credentials for your Organization and Repository: 
+Create two Federated credentials for your Organization and Repository:
 
 - One with Entity `Branch` and Branch `main`.
 - One with Entity `Pull request`.
@@ -54,7 +53,6 @@ command](https://cli.github.com/manual/gh_variable_set) in context of the reposi
 ```bash
 gh variable set -f .env
 ```
-
 
 ## Create connections in Azure ML
 
@@ -108,4 +106,3 @@ Grant the following IAM role assignments to [allow the endpoint to retrieve secr
 - Resource: your Azure ML workspace
 - Role: `Azure Machine Learning Workspace Connection Secrets Reader`
 - Identity: the managed identity you created for the endpoint
-
