@@ -1,5 +1,9 @@
 # Continuous Integration/Delivery
 
+This guide is for CI-CD using GitHub Actions.
+
+If GitHub Actions are not available in your environment, or as a complement for fast local feedback, refer to the alternative guide [to run integration and delivery locally](manual-delivery.md).
+
 ## Deploy Azure resources
 
 Deploy the following Azure Resources
@@ -36,6 +40,7 @@ Create two Federated credentials for your Organization and Repository:
 | Variable name              | Value                                                        | Example                                                      |
 | -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `AISEARCH_ENDPOINT`        | The endpoint for your deployed Azure AI Search instance      | `https://mve.search.windows.net`                             |
+| `AZURE_ML_WORKSPACE`       | The name of the Azure ML workspace                           | `mveazureml`                                                 |
 | `AZURE_CLIENT_ID`          | The client ID of the managed identity created for CD         | `9b7af88e-e726-48ce-a44d-9dc8c947fc4b`                       |
 | `AZURE_RESOURCE_GROUP`     | The resource group of the Azure ML workspace                 | `promptflow-demo`                                            |
 | `AZURE_SUBSCRIPTION_ID`    | The subscription ID of Azure resources                       | `c3055f19-326c-4ff3-a9f7-4531fd14f73e`                       |
