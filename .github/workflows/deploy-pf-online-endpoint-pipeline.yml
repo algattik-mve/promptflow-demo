@@ -52,7 +52,7 @@ jobs:
           --file deployment/endpoint.yaml
           --name ${{env.ENDPOINT_NAME}}
           --set identity.user_assigned_identities[0].resource_id=${{env.ENDPOINT_IDENTITY_ARM_ID}}
-    - name: Get deployment name
+    - name: Get endpoint client id
       run: echo "ENDPOINT_IDENTITY_CLIENT_ID=$(az resource show --id ${{vars.ENDPOINT_IDENTITY_ARM_ID}} --query properties.clientId -o tsv)" >> "$GITHUB_ENV"
     - name: Configure deployment
       run: |
