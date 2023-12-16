@@ -169,6 +169,8 @@ cython_debug/
 connection.json
 .env
 .azureml
+.secrets
+.variables
 # dummy custom tool package example
 hello-world-proj/**
 # secrets
