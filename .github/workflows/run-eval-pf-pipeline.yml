@@ -55,9 +55,6 @@ jobs:
           AISEARCH_INDEX \
           AZURE_RESOURCE_GROUP \
           AZURE_ML_WORKSPACE \
-          AZURE_CLIENT_ID \
-          AZURE_TENANT_ID \
-          AZURE_SUBSCRIPTION_ID \
           ; do echo "Checking \$$i is set..."; printenv $i > /dev/null
         done
     - name: Set up Python
@@ -95,6 +92,7 @@ jobs:
         pf run visualize --name ragas_evaluation_run 
     - name: Archive promptflow run visualizations
       uses: actions/upload-artifact@v3
+      if: ${{ !env.ACT }}
       with:
         name: promptflow-visualizations
         path: /tmp/*.html
@@ -107,6 +105,10 @@ jobs:
       uses: actions/checkout@v2
     - name: Log in to Azure
       uses: ./.github/actions/az-login
+      with:
+        client-id: ${{ vars.AZURE_CLIENT_ID }}
+        tenant-id: ${{ vars.AZURE_TENANT_ID }}
+        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
     - name: Install az ml extension
       run: az extension add -n ml -y
     - name: Set Azure CLI defaults
