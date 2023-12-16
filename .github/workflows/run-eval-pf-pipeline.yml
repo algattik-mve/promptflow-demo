@@ -55,9 +55,6 @@ jobs:
           AISEARCH_INDEX \
           AZURE_RESOURCE_GROUP \
           AZURE_ML_WORKSPACE \
-          AZURE_CLIENT_ID \
-          AZURE_TENANT_ID \
-          AZURE_SUBSCRIPTION_ID \
           ; do echo "Checking \$$i is set..."; printenv $i > /dev/null
         done
     - name: Set up Python
