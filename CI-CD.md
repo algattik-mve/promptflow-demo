@@ -63,13 +63,13 @@ In Azure ML Studio, under `Prompt flow`, in the `Connections` tab, create the fo
 | `open_ai_connection`   | `Azure OpenAI`     | Configure the endpoint of your Azure OpenAI instance    |
 | `ai_search_connection` | `Cognitive search` | Configure the endpoint of your Azure AI Search instance |
 
-The connections are used by the Azure ML endpoint deployed by the pipeline.
+The connections are used by the Azure ML endpoint deployed by the workflow.
 
 ## Grant Azure role assignments
 
 ### Model deployment
 
-Grant the following IAM role assignments to allow the pipeline to deploy models:
+Grant the following IAM role assignments to allow the workflow to deploy models:
 
 - Resource: your Azure ML workspace
 - Role: [`AzureML Data Scientist`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#azureml-data-scientist)
@@ -77,7 +77,7 @@ Grant the following IAM role assignments to allow the pipeline to deploy models:
 
 ### Managed identity assignment
 
-Grant the following IAM role assignments to allow  the pipeline to assign the managed identity to the deployed online endpoint:
+Grant the following IAM role assignments to allow  the workflow to assign the managed identity to the deployed online endpoint:
 
 - Resource: the managed identity you created for the online endpoint
 - Role: [`Managed Identity Operator`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-operator)

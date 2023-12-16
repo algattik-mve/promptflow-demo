@@ -81,7 +81,7 @@ Grant the following IAM role assignments to [allow the endpoint to retrieve secr
 ./local-workflow.sh [act-parameters]
 ```
 
-The default command without parameters will run all workflows. The script accepts parameters hat are passed to the `act` command (see `act --help` for reference), for example:
+The default command without parameters will run all workflows. The script accepts parameters that are passed to the `act` command (see `act --help` for reference), for example:
 
 - `--workflows .github/workflows/run-eval-pf-pipeline.yml`: run only the specified workflow
 - ``--verbose`: verbose output
