@@ -23,7 +23,6 @@ if [ -z "$HAS_ACT" ]; then
     exit 1
 fi
 
-echo ""
 echo "Checking Azure environment..."
 echo ""
 
