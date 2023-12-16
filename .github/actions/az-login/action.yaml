@@ -1,19 +1,11 @@
 name: Login to Azure
-description: >
-  When run in GitHub Actions, login to Azure using environment variables for a Client ID.
-  When run in act (local actions runner), install Azure CLI. CLI will be logged in if
-  msal_token_cache.json and azureProfile.json are correctly mounted.
+description: Login to Azure using environment variables for a Client ID.
 runs:
   using: "composite"
   steps:
     - name: Azure login
-      if: ${{ !env.ACT }}
       uses: azure/login@v1
       with:
         client-id: ${{ vars.AZURE_CLIENT_ID }}
         tenant-id: ${{ vars.AZURE_TENANT_ID }}
         subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
-    - name: Install Azure CLI
-      if: ${{ env.ACT }}
-      run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
-      shell: bash
