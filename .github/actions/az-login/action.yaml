@@ -1,11 +1,21 @@
 name: Login to Azure
 description: Login to Azure using environment variables for a Client ID.
+inputs:
+  client-id:
+    description: 'Client ID for the Azure Service Principal'
+    required: true
+  tenant-id:
+    description: 'Tenant ID for the Azure Service Principal'
+    required: true
+  subscription-id:
+    description: 'Subscription ID for the Azure Service Principal'
+    required: true
 runs:
   using: "composite"
   steps:
     - name: Azure login
       uses: azure/login@v1
       with:
-        client-id: ${{ vars.AZURE_CLIENT_ID }}
-        tenant-id: ${{ vars.AZURE_TENANT_ID }}
-        subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+        client-id: ${{ inputs.client-id }}
+        tenant-id: ${{ inputs.tenant-id }}
+        subscription-id: ${{ inputs.subscription-id }}
