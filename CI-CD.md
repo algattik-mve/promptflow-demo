@@ -11,13 +11,12 @@ Deploy the following Azure Resources
   - One for CD (the identity of the GitHub Actions runner deploying model and endpoint)
   - One for the online endpoint (the identity of the REST endpoint, downloading model assets and connection secrets from Azure ML)
 
-
 ## Configure application federated credentials
 
 Follow the instructions to [
 use the Azure login action with OpenID Connect](https://learn.microsoft.com/en-us/azure/developer/github/connect-from-azure?tabs=azure-portal%2Clinux#use-the-azure-login-action-with-openid-connect).
 
-Create two Federated credentials for your Organization and Repository: 
+Create two Federated credentials for your Organization and Repository:
 
 - One with Entity `Branch` and Branch `main`.
 - One with Entity `Pull request`.
@@ -36,6 +35,7 @@ Create two Federated credentials for your Organization and Repository:
 | Variable name              | Value                                                        | Example                                                      |
 | -------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | `AISEARCH_ENDPOINT`        | The endpoint for your deployed Azure AI Search instance      | `https://mve.search.windows.net`                             |
+| `AZURE_ML_WORKSPACE`       | The name of the Azure ML workspace                           | `mveazureml`                                                 |
 | `AZURE_CLIENT_ID`          | The client ID of the managed identity created for CD         | `9b7af88e-e726-48ce-a44d-9dc8c947fc4b`                       |
 | `AZURE_RESOURCE_GROUP`     | The resource group of the Azure ML workspace                 | `promptflow-demo`                                            |
 | `AZURE_SUBSCRIPTION_ID`    | The subscription ID of Azure resources                       | `c3055f19-326c-4ff3-a9f7-4531fd14f73e`                       |
@@ -66,7 +66,7 @@ The connections are used by the Azure ML endpoint deployed by the pipeline.
 
 ### Model deployment
 
-Grant the following IAM role assignments to allow the pipeline to deploy models:
+Grant the following IAM role assignments to allow the workflow to deploy models:
 
 - Resource: your Azure ML workspace
 - Role: [`AzureML Data Scientist`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#azureml-data-scientist)
@@ -74,7 +74,7 @@ Grant the following IAM role assignments to allow the pipeline to deploy models:
 
 ### Managed identity assignment
 
-Grant the following IAM role assignments to allow  the pipeline to assign the managed identity to the deployed online endpoint:
+Grant the following IAM role assignments to allow  the workflow to assign the managed identity to the deployed online endpoint:
 
 - Resource: the managed identity you created for the online endpoint
 - Role: [`Managed Identity Operator`](https://learn.microsoft.com/en-us/azure/role-based-access-control/built-in-roles#managed-identity-operator)
@@ -103,4 +103,3 @@ Grant the following IAM role assignments to [allow the endpoint to retrieve secr
 - Resource: your Azure ML workspace
 - Role: `Azure Machine Learning Workspace Connection Secrets Reader`
 - Identity: the managed identity you created for the endpoint
-
