@@ -32,8 +32,8 @@ jobs:
     steps:
     - name: Check out repo
       uses: actions/checkout@v2
-    - name: Azure login
-      uses: azure/login@v1
+    - name: Configure Azure CLI
+      uses: ./.github/actions/configure-azure-cli
       with:
         client-id: ${{ vars.AZURE_CLIENT_ID }}
         tenant-id: ${{ vars.AZURE_TENANT_ID }}

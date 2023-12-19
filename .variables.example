@@ -1,0 +1,7 @@
+AISEARCH_ENDPOINT=https://mve.search.windows.net
+AZURE_ML_WORKSPACE=mveazureml
+AZURE_RESOURCE_GROUP=algattik-ai-exploration
+AZURE_SUBSCRIPTION_ID=c3055f19-326c-4ff3-a9f7-4531fd14f73e
+AZURE_TENANT_ID=2ac1091e-2d47-4212-9453-0ca0db6c21d7
+ENDPOINT_IDENTITY_ARM_ID=/subscriptions/c3055f19-326c-4ff3-a9f7-4531fd14f73e/resourceGroups/algattik-ai-exploration/providers/Microsoft.ManagedIdentity/userAssignedIdentities/mve-uami-endpoint
+OPENAI_ENDPOINT=https://mve.openai.azure.com
