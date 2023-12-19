@@ -85,3 +85,12 @@ The default command without parameters will run all workflows. The script accept
 
 - `--workflows .github/workflows/run-eval-pf-pipeline.yml`: run only the specified workflow
 - ``--verbose`: verbose output
+
+On the first run, you will be presented with a prompt such as this one: 
+
+```
+| Please run 'az login' to setup account.
+| To sign in, use a web browser to open the page https://microsoft.com/devicelogin and enter the code E84CTTNT5 to authenticate.
+```
+
+Follow the link, input the code and log in. The authentication token will be stored to the `.azure.secrets` directory. Make sure to keep this local directory safe!

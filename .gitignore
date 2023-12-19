@@ -188,3 +188,8 @@ src/promptflow/promptflow/azure/_restclient/swagger.json
 # chat-with-pdf's prebuilt index
 .pdfs/
 .index/
+
+# local config and secrets
+.secrets
+.variables
+.azure.secrets/

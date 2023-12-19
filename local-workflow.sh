@@ -23,24 +23,8 @@ if [ -z "$HAS_ACT" ]; then
     exit 1
 fi
 
-echo "Checking Azure environment..."
-echo ""
-
-az account show -o table
-
-local_azure_settings_folder="$HOME/.azure"
+local_azure_settings_folder="./.azure.secrets"
 act_azure_settings_folder="/root/.azure"
-container_options=""
-
-for file in msal_token_cache.json azureProfile.json; do
-    local_file="$local_azure_settings_folder/$file"
-    if [ ! -s "$local_file" ]; then
-        echo "File not found or is empty: $local_file"
-        echo "please run `az login`."
-        exit 1
-    fi
-    container_options="$container_options -v $local_azure_settings_folder/$file:$act_azure_settings_folder/$file"
-done
 
 echo ""
 echo "Running act..."
@@ -50,7 +34,7 @@ set -x
 
 act \
     --container-architecture linux/amd64 \
-    --container-options "$container_options" \
+    --container-options "-v $local_azure_settings_folder/:$act_azure_settings_folder/" \
     --var-file .variables \
     --secret-file .secrets \
     $*

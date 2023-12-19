@@ -27,3 +27,7 @@ runs:
       if: ${{ env.ACT }}
       run: curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
       shell: bash
+    - name: Log into Azure account
+      if: ${{ env.ACT }}
+      run: az account show -o table || az login --tenant "${{ inputs.tenant-id }}"
+      shell: bash
